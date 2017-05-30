@@ -8,25 +8,35 @@
  */
 
 
-/* Brief desc.        - A struct to hold information for nodes in the Knight  
- *                      Board graphs
- * param[in] x        - X coordinate of the vertex
- * param[in] y        - Y coordinate of the vertex
- * param     distance - Distance of the vertex from the source vertex 
- * param     parent_x - X coordiante of the parent/predecessor vertex
- * param     parent_y - Y coordiante of the parent/predecessor vertex
+/* Brief desc.          - A struct to hold information for nodes in the Knight  
+ *                        Board graphs
+ * param[in] x          - X coordinate of the vertex
+ * param[in] y          - Y coordinate of the vertex
+ * param[in] distance   - Distance of the vertex from the source vertex 
+ * param     number     - Number of the vertex
+ * param     parent_num - Number of the parent/predecessor vertex
+ * param     visited    - 
  *
  */
 struct Vertex
 {
-    int x; // X coordinate
-    int y; // Y coordinate
-    int distance; // Distance
-    int parent_x; // Parent x coordinate
-    int parent_y; // Parent y coordinate
+    int  x; // X coordinate
+    int  y; // Y coordinate
+    int  distance; // Distance
+    int  number; // Vertex number
+    int  parent_num; // Parent vertex number
+    bool visited; // 
 
     // Constructor
-    Vertex(int x_in, int y_in, int d_in) : x(x_in), y(y_in), distance(d_in) {}
+    Vertex(int x_in, int y_in, int d_in) 
+    : x(x_in), 
+      y(y_in), 
+      distance(d_in),
+      visited(false)
+    {
+        // Calculate vertex number from x and y coordinates
+        number = (y_in * 8) + x_in;
+    }
 };
 
 
