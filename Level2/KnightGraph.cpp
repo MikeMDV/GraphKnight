@@ -5,11 +5,11 @@
  */
 
 #include "KnightGraph.h"
+// #include "MoveValidator.h"
 
 
 KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
-    : m_board(board),
-      m_validator(board)
+    : m_board(board)
 {
     // Construct vector of Vertex structs
     for (int i = 0; i < m_board.size(); i++)
@@ -20,6 +20,9 @@ KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
             m_nodes.push_back(vert);
         }
     }
+
+    // Initialize MoveValidator object
+    MoveValidator m_validator(board);
 }
 
 KnightGraph::~KnightGraph()
@@ -47,41 +50,36 @@ std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, 
 {
     // Mark current node visited
     int number = (start_y * 8) + start_x;
-    auto result = std::find(std::begin(m_nodes), std::end(m_nodes), // predicate);
+    auto result = std::find_if(std::begin(m_nodes), std::end(m_nodes), EqualNum());
     if (result != std::end(m_nodes))
-                            {
-                                result->visited = true;
-                            }
+    {
+        result->visited = true;
+    }
     
     // Create Vertex for current node and vector for path
     Vertex current_node(start_x, start_y);
     std::vector<Vertex> path;
     
-    // Check if current node is end and if so, pop_back current Vertex and return
+    // Check if current node equals end and if so, push_back current Vertex and 
+    // return
     if (start_x == end_x && start_y == end_y)
     {
-        path.pop_back(current_node);
+        path.push_back(current_node);
         return path;
     }
     
     // Check if move to 1 o'clock position is legal
     bool print_board = false;
     std::vector<Vertex> move;
-    move.pop_back(current_node);
+    move.push_back(current_node);
     Vertex position_one(start_x + 1, start_y + 2);
-    move.pop_back(position_one);
-    if (m_validator.validateMoves(move, print_board))
+    move.push_back(position_one);
+    if (m_validator->validateMoves(move, print_board))
     {
         // Check if node is visited
     }
-}
 
-/* Algorithm - Return m_adj_matrix
- * 
- */
-std::vector<std::vector<bool> > KnightGraph::getAdjMatrix()
-{
-    return m_adj_matrix;
+    return path;
 }
 
 /* Algorithm - Return m_path

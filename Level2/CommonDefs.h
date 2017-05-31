@@ -54,12 +54,12 @@ struct GreaterDist
     }
 };
 
-struct GreaterNum
+struct EqualNum
 {
     inline bool operator() (const Vertex& struct_1, const Vertex& struct_2)
     {
-        return (struct1.number > struct_2.number);
+        return (struct_1.number == struct_2.number);
     }
-}
+};
 
 #endif // COMMON_DEFS_H

@@ -33,12 +33,6 @@ public:
      */
     void dfsPathFind(int start_x, int start_y, int end_x, int end_y);
 
-    /* Brief desc.       - A method to retrieve the adjacency matrix showing the 
-     *                     connections between nodes in the graph
-     *
-     */
-    std::vector<std::vector<bool> > getAdjMatrix();
-
     /* Brief desc.       - A method to retrieve the path of moves to the end node 
      *
      */
@@ -55,7 +49,7 @@ private:
     std::vector<Vertex> visitNext(int start_x, int start_y, int end_x, int end_y);
 
     // Attributes
-    MoveValidator m_validator;
+    MoveValidator *m_validator;
     
     std::vector<std::vector<char> > m_board;
 
