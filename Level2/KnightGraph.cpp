@@ -8,7 +8,8 @@
 
 
 KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
-    : m_board(board)
+    : m_board(board),
+      m_validator(board)
 {
     // Construct vector of Vertex structs
     for (int i = 0; i < m_board.size(); i++)
@@ -23,15 +24,56 @@ KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
 
 KnightGraph::~KnightGraph()
 {
-    // Not implemented yet
+    // Empty
 }
 
 /* Algorithm - 
  * 
  */
-void KnightGraph::dfsGraphBuild(int start_x, int start_y, int end_x, int end_y)
+void KnightGraph::dfsPathFind(int start_x, int start_y, int end_x, int end_y)
 {
-    // Not implemented yet
+    // Call visitNext() to begin DFS search for path to end
+    std::vector<Vertex> reverse_path = visitNext(start_x, start_y, end_x, end_y);
+    
+    // Assign each Vertex to m_path in reverse order
+    for (int i = 0; i < reverse_path.size(); i++)
+    {
+        m_path.push_back(reverse_path.back());
+        reverse_path.pop_back();
+    }
+}
+
+std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
+{
+    // Mark current node visited
+    int number = (start_y * 8) + start_x;
+    auto result = std::find(std::begin(m_nodes), std::end(m_nodes), // predicate);
+    if (result != std::end(m_nodes))
+                            {
+                                result->visited = true;
+                            }
+    
+    // Create Vertex for current node and vector for path
+    Vertex current_node(start_x, start_y);
+    std::vector<Vertex> path;
+    
+    // Check if current node is end and if so, pop_back current Vertex and return
+    if (start_x == end_x && start_y == end_y)
+    {
+        path.pop_back(current_node);
+        return path;
+    }
+    
+    // Check if move to 1 o'clock position is legal
+    bool print_board = false;
+    std::vector<Vertex> move;
+    move.pop_back(current_node);
+    Vertex position_one(start_x + 1, start_y + 2);
+    move.pop_back(position_one);
+    if (m_validator.validateMoves(move, print_board))
+    {
+        // Check if node is visited
+    }
 }
 
 /* Algorithm - Return m_adj_matrix
