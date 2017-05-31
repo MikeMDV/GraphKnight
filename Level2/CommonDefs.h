@@ -54,11 +54,19 @@ struct GreaterDist
     }
 };
 
-struct EqualNum
+/* Brief desc. - A function object for matching Vertex structs based on struct
+ *               number
+ * Details     - For use with STL algorithms requiring a unary predicate; Will
+ *               return true if struct number equals number passed as param
+ *
+ */
+struct match_num : std::unary_function<Vertex, bool>
 {
-    inline bool operator() (const Vertex& struct_1, const Vertex& struct_2)
+    int num;
+    match_num(int num):num(num){}
+    inline bool operator() (const Vertex& v)
     {
-        return (struct_1.number == struct_2.number);
+        return (v.number == num);
     }
 };
 
