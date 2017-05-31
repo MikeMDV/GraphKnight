@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 5/26/17
+ *  Date Last Modified: 05/26/17
  *
  */
 
@@ -22,7 +22,7 @@ public:
     // Destructor
     ~MoveValidator();
 
-    /* Brief desc.           - A function to validate a set of moves and print 
+    /* Brief desc.           - A method to validate a set of moves and print 
      *                         the board for each move if requested
      * param[in] moves       - Vector of Vertex structs representing each move
      * param[in] print_moves - A flag to indicate whether board should be 
@@ -37,13 +37,13 @@ public:
 
 private:
 
-    /* Brief desc.     - A function to print the board to stdout
+    /* Brief desc.     - A method to print the board to stdout
      * param[in] board - A 2D Vector of chars to represent the board
      *
      */
     void printBoard(std::vector<std::vector<char> > board);
 
-    /* Brief desc.           - A function to validate one move
+    /* Brief desc.           - A method to validate one move
      * param[in] origin      - Vertex representing the starting position
      * param[in] destination - Vertex representing the end position of the move
      *

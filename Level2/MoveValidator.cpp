@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 5/26/17
+ *  Date Last Modified: 05/26/17
  *
  */
 
@@ -74,7 +74,7 @@ bool MoveValidator::validateMoves(
 
     }
 
-    if (all_moves_are_valid)
+    if (all_moves_are_valid && print_moves)
     {
         std::cout << "All the moves were valid.\n";
     }

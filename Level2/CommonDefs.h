@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 5/26/17
+ *  Date Last Modified: 05/30/17
  *
  */
 
@@ -25,13 +25,13 @@ struct Vertex
     int  distance; // Distance
     int  number; // Vertex number
     int  parent_num; // Parent vertex number
-    bool visited; // 
+    bool visited; // Indicates whether vertex was previously visited 
 
     // Constructor
-    Vertex(int x_in, int y_in, int d_in) 
+    Vertex(int x_in, int y_in) 
     : x(x_in), 
       y(y_in), 
-      distance(d_in),
+      distance(std::numeric_limits<int>::max()),
       visited(false)
     {
         // Calculate vertex number from x and y coordinates
