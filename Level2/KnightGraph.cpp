@@ -50,7 +50,7 @@ std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, 
 {
     // Mark current node visited
     int number = (start_y * 8) + start_x;
-    auto result = std::find_if(std::begin(m_nodes), std::end(m_nodes), EqualNum());
+    auto result = std::find_if(std::begin(m_nodes), std::end(m_nodes), match_num(number));
     if (result != std::end(m_nodes))
     {
         result->visited = true;
@@ -71,6 +71,7 @@ std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, 
     // Check if move to 1 o'clock position is legal
     bool print_board = false;
     std::vector<Vertex> move;
+    
     move.push_back(current_node);
     Vertex position_one(start_x + 1, start_y + 2);
     move.push_back(position_one);
