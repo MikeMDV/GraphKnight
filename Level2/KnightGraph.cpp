@@ -4,8 +4,9 @@
  *
  */
 
+#include <iostream>
+
 #include "KnightGraph.h"
-// #include "MoveValidator.h"
 
 
 KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
@@ -22,7 +23,7 @@ KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     }
 
     // Initialize MoveValidator object
-    MoveValidator m_validator(board);
+    m_validator = new MoveValidator(board);
 }
 
 KnightGraph::~KnightGraph()
@@ -40,15 +41,12 @@ KnightGraph::~KnightGraph()
  */
 void KnightGraph::dfsPathFind(int start_x, int start_y, int end_x, int end_y)
 {
-    // Call visitNext() to begin DFS search for path to end
-    std::vector<Vertex> reverse_path = visitNext(start_x, start_y, end_x, end_y);
+    // Call visitNext() to begin DFS search for reverse path to end
+    std::vector<Vertex> path = visitNext(start_x, start_y, end_x, end_y);
     
-    // Assign each Vertex to m_path in reverse order
-    for (int i = 0; i < reverse_path.size(); i++)
-    {
-        m_path.push_back(reverse_path.back());
-        reverse_path.pop_back();
-    }
+    // Reverse path and assign to m_path
+    std::reverse(std::begin(path), std::end(path));
+    m_path = path;
 }
 
 /* Algorithm - Mark current node visited
@@ -110,173 +108,173 @@ std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, 
         }
     }
 
-    // // Check if move to 2 o'clock position is legal
-    // Vertex position_two(start_x + 2, start_y - 1);
-    // if (isLegalMove(current_node, position_two))
-    // {
-    //     // Check if node has been visited
-    //     auto result = std::find_if(
-    //         std::begin(m_nodes), std::end(m_nodes), 
-    //         match_num(position_two.number));
-    //     if (!result->visited)
-    //     {
-    //         // Visit the node
-    //         path = visitNext(result->x, result->y, end_x, end_y);
-    //     }
+    // Check if move to 2 o'clock position is legal
+    Vertex position_two(start_x + 2, start_y - 1);
+    if (isLegalMove(current_node, position_two))
+    {
+        // Check if node has been visited
+        auto result = std::find_if(
+            std::begin(m_nodes), std::end(m_nodes), 
+            match_num(position_two.number));
+        if (!result->visited)
+        {
+            // Visit the node
+            path = visitNext(result->x, result->y, end_x, end_y);
+        }
 
-    //     // Check if returned path has the end node at front 
-    //     if ((path.size() >= 1) 
-    //         && (path.front().x == end_x && path.front().y == end_y))
-    //     {
-    //         // Add current node to path and return
-    //         path.push_back(current_node);
-    //         return path;
-    //     }
-    // }
+        // Check if returned path has the end node at front 
+        if ((path.size() >= 1) 
+            && (path.front().x == end_x && path.front().y == end_y))
+        {
+            // Add current node to path and return
+            path.push_back(current_node);
+            return path;
+        }
+    }
 
-    // // Check if move to 4 o'clock position is legal
-    // Vertex position_three(start_x + 2, start_y + 1);
-    // if (isLegalMove(current_node, position_two))
-    // {
-    //     // Check if node has been visited
-    //     auto result = std::find_if(
-    //         std::begin(m_nodes), std::end(m_nodes), 
-    //         match_num(position_three.number));
-    //     if (!result->visited)
-    //     {
-    //         // Visit the node
-    //         path = visitNext(result->x, result->y, end_x, end_y);
-    //     }
+    // Check if move to 4 o'clock position is legal
+    Vertex position_three(start_x + 2, start_y + 1);
+    if (isLegalMove(current_node, position_two))
+    {
+        // Check if node has been visited
+        auto result = std::find_if(
+            std::begin(m_nodes), std::end(m_nodes), 
+            match_num(position_three.number));
+        if (!result->visited)
+        {
+            // Visit the node
+            path = visitNext(result->x, result->y, end_x, end_y);
+        }
 
-    //     // Check if returned path has the end node at front 
-    //     if ((path.size() >= 1) 
-    //         && (path.front().x == end_x && path.front().y == end_y))
-    //     {
-    //         // Add current node to path and return
-    //         path.push_back(current_node);
-    //         return path;
-    //     }
-    // }
+        // Check if returned path has the end node at front 
+        if ((path.size() >= 1) 
+            && (path.front().x == end_x && path.front().y == end_y))
+        {
+            // Add current node to path and return
+            path.push_back(current_node);
+            return path;
+        }
+    }
 
-    // // Check if move to 5 o'clock position is legal
-    // Vertex position_four(start_x + 1, start_y + 2);
-    // if (isLegalMove(current_node, position_two))
-    // {
-    //     // Check if node has been visited
-    //     auto result = std::find_if(
-    //         std::begin(m_nodes), std::end(m_nodes), 
-    //         match_num(position_four.number));
-    //     if (!result->visited)
-    //     {
-    //         // Visit the node
-    //         path = visitNext(result->x, result->y, end_x, end_y);
-    //     }
+    // Check if move to 5 o'clock position is legal
+    Vertex position_four(start_x + 1, start_y + 2);
+    if (isLegalMove(current_node, position_two))
+    {
+        // Check if node has been visited
+        auto result = std::find_if(
+            std::begin(m_nodes), std::end(m_nodes), 
+            match_num(position_four.number));
+        if (!result->visited)
+        {
+            // Visit the node
+            path = visitNext(result->x, result->y, end_x, end_y);
+        }
 
-    //     // Check if returned path has the end node at front 
-    //     if ((path.size() >= 1) 
-    //         && (path.front().x == end_x && path.front().y == end_y))
-    //     {
-    //         // Add current node to path and return
-    //         path.push_back(current_node);
-    //         return path;
-    //     }
-    // }
+        // Check if returned path has the end node at front 
+        if ((path.size() >= 1) 
+            && (path.front().x == end_x && path.front().y == end_y))
+        {
+            // Add current node to path and return
+            path.push_back(current_node);
+            return path;
+        }
+    }
 
-    // // Check if move to 7 o'clock position is legal
-    // Vertex position_five(start_x - 1, start_y + 2);
-    // if (isLegalMove(current_node, position_two))
-    // {
-    //     // Check if node has been visited
-    //     auto result = std::find_if(
-    //         std::begin(m_nodes), std::end(m_nodes), 
-    //         match_num(position_five.number));
-    //     if (!result->visited)
-    //     {
-    //         // Visit the node
-    //         path = visitNext(result->x, result->y, end_x, end_y);
-    //     }
+    // Check if move to 7 o'clock position is legal
+    Vertex position_five(start_x - 1, start_y + 2);
+    if (isLegalMove(current_node, position_two))
+    {
+        // Check if node has been visited
+        auto result = std::find_if(
+            std::begin(m_nodes), std::end(m_nodes), 
+            match_num(position_five.number));
+        if (!result->visited)
+        {
+            // Visit the node
+            path = visitNext(result->x, result->y, end_x, end_y);
+        }
 
-    //     // Check if returned path has the end node at front 
-    //     if ((path.size() >= 1) 
-    //         && (path.front().x == end_x && path.front().y == end_y))
-    //     {
-    //         // Add current node to path and return
-    //         path.push_back(current_node);
-    //         return path;
-    //     }
-    // }
+        // Check if returned path has the end node at front 
+        if ((path.size() >= 1) 
+            && (path.front().x == end_x && path.front().y == end_y))
+        {
+            // Add current node to path and return
+            path.push_back(current_node);
+            return path;
+        }
+    }
 
-    // // Check if move to 8 o'clock position is legal
-    // Vertex position_six(start_x - 2, start_y + 1);
-    // if (isLegalMove(current_node, position_two))
-    // {
-    //     // Check if node has been visited
-    //     auto result = std::find_if(
-    //         std::begin(m_nodes), std::end(m_nodes), 
-    //         match_num(position_six.number));
-    //     if (!result->visited)
-    //     {
-    //         // Visit the node
-    //         path = visitNext(result->x, result->y, end_x, end_y);
-    //     }
+    // Check if move to 8 o'clock position is legal
+    Vertex position_six(start_x - 2, start_y + 1);
+    if (isLegalMove(current_node, position_two))
+    {
+        // Check if node has been visited
+        auto result = std::find_if(
+            std::begin(m_nodes), std::end(m_nodes), 
+            match_num(position_six.number));
+        if (!result->visited)
+        {
+            // Visit the node
+            path = visitNext(result->x, result->y, end_x, end_y);
+        }
 
-    //     // Check if returned path has the end node at front 
-    //     if ((path.size() >= 1) 
-    //         && (path.front().x == end_x && path.front().y == end_y))
-    //     {
-    //         // Add current node to path and return
-    //         path.push_back(current_node);
-    //         return path;
-    //     }
-    // }
+        // Check if returned path has the end node at front 
+        if ((path.size() >= 1) 
+            && (path.front().x == end_x && path.front().y == end_y))
+        {
+            // Add current node to path and return
+            path.push_back(current_node);
+            return path;
+        }
+    }
 
-    // // Check if move to 10 o'clock position is legal
-    // Vertex position_seven(start_x - 2, start_y - 1);
-    // if (isLegalMove(current_node, position_two))
-    // {
-    //     // Check if node has been visited
-    //     auto result = std::find_if(
-    //         std::begin(m_nodes), std::end(m_nodes), 
-    //         match_num(position_seven.number));
-    //     if (!result->visited)
-    //     {
-    //         // Visit the node
-    //         path = visitNext(result->x, result->y, end_x, end_y);
-    //     }
+    // Check if move to 10 o'clock position is legal
+    Vertex position_seven(start_x - 2, start_y - 1);
+    if (isLegalMove(current_node, position_two))
+    {
+        // Check if node has been visited
+        auto result = std::find_if(
+            std::begin(m_nodes), std::end(m_nodes), 
+            match_num(position_seven.number));
+        if (!result->visited)
+        {
+            // Visit the node
+            path = visitNext(result->x, result->y, end_x, end_y);
+        }
 
-    //     // Check if returned path has the end node at front 
-    //     if ((path.size() >= 1) 
-    //         && (path.front().x == end_x && path.front().y == end_y))
-    //     {
-    //         // Add current node to path and return
-    //         path.push_back(current_node);
-    //         return path;
-    //     }
-    // }
+        // Check if returned path has the end node at front 
+        if ((path.size() >= 1) 
+            && (path.front().x == end_x && path.front().y == end_y))
+        {
+            // Add current node to path and return
+            path.push_back(current_node);
+            return path;
+        }
+    }
 
-    // // Check if move to 11 o'clock position is legal
-    // Vertex position_eight(start_x - 1, start_y - 2);
-    // if (isLegalMove(current_node, position_two))
-    // {
-    //     // Check if node has been visited
-    //     auto result = std::find_if(
-    //         std::begin(m_nodes), std::end(m_nodes), 
-    //         match_num(position_eight.number));
-    //     if (!result->visited)
-    //     {
-    //         // Visit the node
-    //         path = visitNext(result->x, result->y, end_x, end_y);
-    //     }
+    // Check if move to 11 o'clock position is legal
+    Vertex position_eight(start_x - 1, start_y - 2);
+    if (isLegalMove(current_node, position_two))
+    {
+        // Check if node has been visited
+        auto result = std::find_if(
+            std::begin(m_nodes), std::end(m_nodes), 
+            match_num(position_eight.number));
+        if (!result->visited)
+        {
+            // Visit the node
+            path = visitNext(result->x, result->y, end_x, end_y);
+        }
 
-    //     // Check if returned path has the end node at front 
-    //     if ((path.size() >= 1) 
-    //         && (path.front().x == end_x && path.front().y == end_y))
-    //     {
-    //         // Add current node to path and return
-    //         path.push_back(current_node);
-    //         return path;
-    //     }
-    // }
+        // Check if returned path has the end node at front 
+        if ((path.size() >= 1) 
+            && (path.front().x == end_x && path.front().y == end_y))
+        {
+            // Add current node to path and return
+            path.push_back(current_node);
+            return path;
+        }
+    }
     
     // If control reaches this point, the end node was not in any of the 
     // returned paths; Return an empty path
@@ -295,7 +293,7 @@ bool KnightGraph::isLegalMove(Vertex start, Vertex end)
     
     move.push_back(start);
     move.push_back(end);
-
+    
     return (m_validator->validateMoves(move, print_board));
 }
 

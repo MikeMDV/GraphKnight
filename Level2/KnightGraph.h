@@ -48,12 +48,17 @@ private:
      * param[in] end_x   - X coordinate of the ending node
      * param[in] end_y   - Y coordinate of the ending node
      *
+     * param[out]        - A path to the end in reverse order; The function can
+     *                     return an empty path if the end node was not found
+     *
      */
     std::vector<Vertex> visitNext(int start_x, int start_y, int end_x, int end_y);
 
     /* Brief desc.     - A method to check if a move is legal
      * param[in] start - Starting node
      * param[in] end   - Ending node
+     *
+     * param[out]      - True if the move was legal
      *
      */
     bool isLegalMove(Vertex start, Vertex end);

@@ -34,9 +34,17 @@ bool MoveValidator::validateMoves(
         bool print_moves)
 {
     // Retrieve starting and ending points and set them to 'S' and 'E'
-    m_board[moves.front().y][moves.front().x] = 'S';
-    m_board[moves.back().y][moves.back().x]   = 'E';
-
+    if (moves.size() >= 1)
+    {
+        m_board[moves.front().y][moves.front().x] = 'S';
+        m_board[moves.back().y][moves.back().x]   = 'E';
+    }
+    else
+    {
+        // Empty moves path provided; Return false
+        return false;
+    }
+    
     if (print_moves)
     {
         printBoard(m_board);
