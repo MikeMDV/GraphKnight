@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
     int start_x = 1;
     int start_y = 2;
-    int end_x   = 3;
+    int end_x   = 2;
     int end_y   = 0;
 
     graph->dfsPathFind(start_x, start_y, end_x, end_y);
