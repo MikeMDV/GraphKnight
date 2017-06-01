@@ -39,8 +39,7 @@ KnightGraph::~KnightGraph()
  *             reverse order
  * 
  */
-void KnightGraph::dfsPathFind(const int &start_x, const int &start_y, 
-    const int &end_x, const int &end_y)
+void KnightGraph::dfsPathFind(int start_x, int start_y, int end_x, int end_y)
 {
     // Call visitNext() to begin DFS search for path to end
     std::vector<Vertex> reverse_path = visitNext(start_x, start_y, end_x, end_y);
@@ -66,8 +65,7 @@ void KnightGraph::dfsPathFind(const int &start_x, const int &start_y,
  *             case)
  * 
  */
-std::vector<Vertex> KnightGraph::visitNext(const int &start_x, const int &start_y,
-    const int &end_x, const int &end_y)
+std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
 {
     // Create Vertex for current node and vector for path
     Vertex current_node(start_x, start_y);
