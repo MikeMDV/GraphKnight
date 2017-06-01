@@ -26,16 +26,23 @@ int main(int argc, char *argv[])
           {'.', '.', '.', '.', '.', '.', '.', '.'},
           {'.', '.', '.', '.', '.', '.', '.', '.'} };
 
-    // MoveValidator validator(board);
-    KnightGraph   graph(board);
+    MoveValidator *validator = new MoveValidator(board);
+    KnightGraph   *graph     = new KnightGraph(board);
 
-    // std::vector<Vertex> moves;
+    int start_x = 1;
+    int start_y = 2;
+    int end_x   = 3;
+    int end_y   = 0;
+
+    graph->dfsPathFind(start_x, start_y, end_x, end_y);
+
+    std::vector<Vertex> moves = graph->getPathToEnd();
 
     // bool printBoard = true;
     // // Comment above and uncomment below to test no board printing
     // // bool printBoard = false;
 
-    // bool areValidMoves = validator.validateMoves(moves, printBoard);
+    // bool areValidMoves = validator->validateMoves(moves, printBoard);
 
     return 0;
 }

@@ -31,7 +31,8 @@ public:
      * param[in] y_end   - Y coordinate of the ending node
      *
      */
-    void dfsPathFind(int start_x, int start_y, int end_x, int end_y);
+    void dfsPathFind(const int &start_x, const int &start_y, 
+        const int &end_x, const int &end_y);
 
     /* Brief desc.       - A method to retrieve the path of moves to the end node 
      *
@@ -41,12 +42,23 @@ public:
 
 private:
 
-    /* Brief desc.      - A recursive method to visit nodes and return a vector
-     *                    of Vertex structs to build the path to the end node
-     * param[in] 
+    /* Brief desc.       - A recursive method to visit nodes and return a vector
+     *                     of Vertex structs to build the path to the end node
+     * param[in] start_x - X coordinate of the starting node
+     * param[in] start_y - Y coordinate of the starting node
+     * param[in] end_x   - X coordinate of the ending node
+     * param[in] end_y   - Y coordinate of the ending node
      *
      */
-    std::vector<Vertex> visitNext(int start_x, int start_y, int end_x, int end_y);
+    std::vector<Vertex> visitNext(const int &start_x, const int &start_y, 
+        const int &end_x, const int &end_y);
+
+    /* Brief desc.     - A method to check if a move is legal
+     * param[in] start - Starting node
+     * param[in] end   - Ending node
+     *
+     */
+    bool isLegalMove(Vertex start, Vertex end);
 
     // Attributes
     MoveValidator *m_validator;
