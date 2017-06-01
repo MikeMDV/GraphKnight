@@ -31,8 +31,7 @@ public:
      * param[in] y_end   - Y coordinate of the ending node
      *
      */
-    void dfsPathFind(const int &start_x, const int &start_y, 
-        const int &end_x, const int &end_y);
+    void dfsPathFind(int start_x, int start_y, int end_x, int end_y);
 
     /* Brief desc.       - A method to retrieve the path of moves to the end node 
      *
@@ -50,8 +49,7 @@ private:
      * param[in] end_y   - Y coordinate of the ending node
      *
      */
-    std::vector<Vertex> visitNext(const int &start_x, const int &start_y, 
-        const int &end_x, const int &end_y);
+    std::vector<Vertex> visitNext(int start_x, int start_y, int end_x, int end_y);
 
     /* Brief desc.     - A method to check if a move is legal
      * param[in] start - Starting node
