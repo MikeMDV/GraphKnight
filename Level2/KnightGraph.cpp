@@ -30,7 +30,6 @@ KnightGraph::~KnightGraph()
     if (m_validator)
     {
         delete m_validator;
-        m_validator = NULL;
     }
 }
 
