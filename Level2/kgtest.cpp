@@ -38,11 +38,11 @@ int main(int argc, char *argv[])
 
     std::vector<Vertex> moves = graph->getPathToEnd();
 
-    // bool printBoard = true;
-    // // Comment above and uncomment below to test no board printing
-    // // bool printBoard = false;
+    bool printBoard = true;
+    // Comment above and uncomment below to test no board printing
+    // bool printBoard = false;
 
-    // bool areValidMoves = validator->validateMoves(moves, printBoard);
+    bool areValidMoves = validator->validateMoves(moves, printBoard);
 
     return 0;
 }
