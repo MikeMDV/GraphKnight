@@ -54,6 +54,14 @@ private:
      */
     std::vector<Vertex> visitNext(int start_x, int start_y, int end_x, int end_y);
 
+    /* Brief desc.     - A method to retrieve the next legal move
+     * param[in] start - Starting node
+     *
+     * param[out]      - Vertex representing the next legal move
+     *
+     */
+    Vertex getNextLegalMove(Vertex start);
+
     /* Brief desc.     - A method to check if a move is legal
      * param[in] start - Starting node
      * param[in] end   - Ending node

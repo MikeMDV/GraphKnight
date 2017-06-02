@@ -84,7 +84,7 @@ std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, 
         return path;
     }
     
-    // Check if move to 1 o'clock position is legal
+/*    // Check if move to 1 o'clock position is legal
     Vertex position_one(start_x + 1, start_y - 2);
     if (isLegalMove(current_node, position_one))
     {
@@ -277,10 +277,78 @@ std::vector<Vertex> KnightGraph::visitNext(int start_x, int start_y, int end_x, 
     }
     
     // If control reaches this point, the end node was not in any of the 
-    // returned paths; Return an empty path
+    // returned paths; Return an empty path*/
 
     return path;
 }
+
+/* Algorithm - Check for next legal move starting with 1 o'clock position, 
+ *             followed by 2:00, 4:00, 5:00, 7:00, 8:00, 10:00, 11:00
+ * 
+ */
+ Vertex KnightGraph::getNextLegalMove(Vertex start)
+ {
+    // Check if move to 1 o'clock position is legal
+    Vertex move(start.x + 1, start.y - 2);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // Check if move to 2 o'clock position is legal
+    move = Vertex(start.x + 2, start.y - 1);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // Check if move to 4 o'clock position is legal
+    move = Vertex(start.x + 2, start.y + 1);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // Check if move to 5 o'clock position is legal
+    move = Vertex(start.x + 1, start.y + 2);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // Check if move to 7 o'clock position is legal
+    move = Vertex(start.x - 1, start.y + 2);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // Check if move to 8 o'clock position is legal
+    move = Vertex(start.x - 2, start.y + 1);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // Check if move to 10 o'clock position is legal
+    move = Vertex(start.x - 2, start.y - 1);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // Check if move to 10 o'clock position is legal
+    move = Vertex(start.x - 1, start.y - 2);
+    if (isLegalMove(start, move))
+    {
+        return move;
+    }
+
+    // If no legal moves exist, return the starting Vertex
+    move = Vertex(start.x, start.y);
+    return move;
+
+ }
 
 /* Algorithm - 
  * 
