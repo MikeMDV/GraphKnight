@@ -52,7 +52,7 @@ private:
      *                     return an empty path if the end node was not found
      *
      */
-    std::vector<Vertex> visitNext(int start_x, int start_y, int end_x, int end_y);
+    void visitNext(int start_x, int start_y, int end_x, int end_y);
 
     /* Brief desc.     - A method to retrieve the next legal move
      * param[in] start - Starting node
@@ -60,7 +60,7 @@ private:
      * param[out]      - Vertex representing the next legal move
      *
      */
-    Vertex getNextLegalMove(Vertex start);
+    std::vector<Vertex> getLegalMoves(Vertex start);
 
     /* Brief desc.     - A method to check if a move is legal
      * param[in] start - Starting node
