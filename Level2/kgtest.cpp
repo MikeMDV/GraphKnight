@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 5/26/17
+ *  Date Last Modified: 06/03/17
  *
  */
 
@@ -29,10 +29,12 @@ int main(int argc, char *argv[])
     MoveValidator *validator = new MoveValidator(board);
     KnightGraph   *graph     = new KnightGraph(board);
 
-    int start_x = 1;
-    int start_y = 2;
-    int end_x   = 4;
-    int end_y   = 1;
+    // int start_x = -1;
+    // int start_y = 88;
+    int start_x = 6;
+    int start_y = 0;
+    int end_x   = 2;
+    int end_y   = 0;
 
     graph->dfsPathFind(start_x, start_y, end_x, end_y);
     
@@ -41,8 +43,7 @@ int main(int argc, char *argv[])
     bool printBoard = true;
     // Comment above and uncomment below to test no board printing
     // bool printBoard = false;
-    bool areValidMoves = validator->validateMoves(moves, printBoard);
-    
+    validator->validateMoves(moves, printBoard);
 
     return 0;
 }

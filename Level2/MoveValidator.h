@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 05/26/17
+ *  Date Last Modified: 06/03/17
  *
  */
 
@@ -31,9 +31,25 @@ public:
      * param[out]            - Returns true if all moves are valid
      *
      */
-    bool validateMoves(
-        std::vector<Vertex> moves,
-        bool print_moves);
+    bool validateMoves(std::vector<Vertex> moves, bool print_moves);
+
+    /* Brief desc.     - A method to return a set of legal moves from a
+     *                      position 
+     * param[in] start - Starting node
+     *
+     * param[out]      - Vector of Vertex structs representing the available 
+     *                   legal moves
+     *
+     */
+    std::vector<Vertex> getLegalMoves(Vertex start);
+
+    /* Brief desc.        - A method to verify a position is on the board 
+     * param[in] position - Vertex representing the position needing checked
+     *
+     * param[out]         - Returns true if the position is on the board
+     *
+     */
+    bool onBoard(Vertex position);
 
 private:
 
@@ -50,9 +66,16 @@ private:
      * param[out]            - Returns true if the move is valid
      *
      */
-    bool checkMove(
-        Vertex origin, 
-        Vertex destination);
+    bool checkMove(Vertex origin, Vertex destination);
+
+    /* Brief desc.     - A method to check if a move is legal
+     * param[in] start - Starting node
+     * param[in] end   - Ending node
+     *
+     * param[out]      - True if the move was legal
+     *
+     */
+    bool isLegalMove(Vertex start, Vertex end);
 
     // Attributes
     std::vector<std::vector<char> > m_board;

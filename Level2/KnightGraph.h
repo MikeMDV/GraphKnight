@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 05/30/17
+ *  Date Last Modified: 06/03/17
  *
  */
 
@@ -33,7 +33,7 @@ public:
      */
     void dfsPathFind(int start_x, int start_y, int end_x, int end_y);
 
-    /* Brief desc.       - A method to retrieve the path of moves to the end node 
+    /* Brief desc. - A method to retrieve the path of moves to the end node 
      *
      */
     std::vector<Vertex> getPathToEnd();
@@ -41,35 +41,15 @@ public:
 
 private:
 
-    /* Brief desc.       - A recursive method to visit nodes and return a vector
-     *                     of Vertex structs to build the path to the end node
+    /* Brief desc.       - A recursive method to visit nodes and build the path 
+     *                     to the end node
      * param[in] start_x - X coordinate of the starting node
      * param[in] start_y - Y coordinate of the starting node
      * param[in] end_x   - X coordinate of the ending node
      * param[in] end_y   - Y coordinate of the ending node
      *
-     * param[out]        - A path to the end in reverse order; The function can
-     *                     return an empty path if the end node was not found
-     *
      */
     void visitNext(int start_x, int start_y, int end_x, int end_y);
-
-    /* Brief desc.     - A method to retrieve the next legal move
-     * param[in] start - Starting node
-     *
-     * param[out]      - Vertex representing the next legal move
-     *
-     */
-    std::vector<Vertex> getLegalMoves(Vertex start);
-
-    /* Brief desc.     - A method to check if a move is legal
-     * param[in] start - Starting node
-     * param[in] end   - Ending node
-     *
-     * param[out]      - True if the move was legal
-     *
-     */
-    bool isLegalMove(Vertex start, Vertex end);
 
     // Attributes
     MoveValidator *m_validator;

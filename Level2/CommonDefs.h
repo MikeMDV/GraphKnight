@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 05/30/17
+ *  Date Last Modified: 06/03/17
  *
  */
 
@@ -15,7 +15,7 @@
  * param[in] distance   - Distance of the vertex from the source vertex 
  * param     number     - Number of the vertex
  * param     parent_num - Number of the parent/predecessor vertex
- * param     visited    - 
+ * param     visited    - True if vertex was previously visited
  *
  */
 struct Vertex
