@@ -63,6 +63,7 @@ void KnightGraph::dfsPathFind(int start_x, int start_y, int end_x, int end_y)
  */
 void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
 {
+    std::cout << "Entered visitNext()\n";
     // Create Vertex for current node and vector for path
     Vertex current_node(start_x, start_y);
 
@@ -84,203 +85,39 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     // Get available legal moves
     std::vector<Vertex> legal_moves = getLegalMoves(current_node);
 
-    // Check if legal moves have been visited
-
-    // If no unvisited legal move, 
-    
-/*    // Check if move to 1 o'clock position is legal
-    Vertex position_one(start_x + 1, start_y - 2);
-    if (isLegalMove(current_node, position_one))
+    // Check for first unvisited legal move
+    int position = -1;
+    for (int i = 0; i < legal_moves.size(); i++)
     {
-        // Check if node has been visited
         auto result = std::find_if(
             std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_one.number));
-        if (!result->visited)
+            match_num(legal_moves[i].number));
+        if ((result != std::end(m_nodes)) && !result->visited)
         {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
-
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
+            position = i;
+            i = legal_moves.size();
         }
     }
 
-    // Check if move to 2 o'clock position is legal
-    Vertex position_two(start_x + 2, start_y - 1);
-    if (isLegalMove(current_node, position_two))
-    {
-        // Check if node has been visited
-        auto result = std::find_if(
-            std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_two.number));
-        if (!result->visited)
-        {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
+    // Determine next node
+    int next_x;
+    int next_y;
 
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
-        }
+    if (position != -1)
+    {
+        next_x = legal_moves[position].x;
+        next_y = legal_moves[position].y;
+    }
+    else
+    {
+        // No unvisited legal moves exist; Move back one node and check for move
+        m_path.pop_back();
+        next_x = m_path.back().x;
+        next_y = m_path.back().y;
     }
 
-    // Check if move to 4 o'clock position is legal
-    Vertex position_three(start_x + 2, start_y + 1);
-    if (isLegalMove(current_node, position_two))
-    {
-        // Check if node has been visited
-        auto result = std::find_if(
-            std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_three.number));
-        if (!result->visited)
-        {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
-
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
-        }
-    }
-
-    // Check if move to 5 o'clock position is legal
-    Vertex position_four(start_x + 1, start_y + 2);
-    if (isLegalMove(current_node, position_two))
-    {
-        // Check if node has been visited
-        auto result = std::find_if(
-            std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_four.number));
-        if (!result->visited)
-        {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
-
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
-        }
-    }
-
-    // Check if move to 7 o'clock position is legal
-    Vertex position_five(start_x - 1, start_y + 2);
-    if (isLegalMove(current_node, position_two))
-    {
-        // Check if node has been visited
-        auto result = std::find_if(
-            std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_five.number));
-        if (!result->visited)
-        {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
-
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
-        }
-    }
-
-    // Check if move to 8 o'clock position is legal
-    Vertex position_six(start_x - 2, start_y + 1);
-    if (isLegalMove(current_node, position_two))
-    {
-        // Check if node has been visited
-        auto result = std::find_if(
-            std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_six.number));
-        if (!result->visited)
-        {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
-
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
-        }
-    }
-
-    // Check if move to 10 o'clock position is legal
-    Vertex position_seven(start_x - 2, start_y - 1);
-    if (isLegalMove(current_node, position_two))
-    {
-        // Check if node has been visited
-        auto result = std::find_if(
-            std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_seven.number));
-        if (!result->visited)
-        {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
-
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
-        }
-    }
-
-    // Check if move to 11 o'clock position is legal
-    Vertex position_eight(start_x - 1, start_y - 2);
-    if (isLegalMove(current_node, position_two))
-    {
-        // Check if node has been visited
-        auto result = std::find_if(
-            std::begin(m_nodes), std::end(m_nodes), 
-            match_num(position_eight.number));
-        if (!result->visited)
-        {
-            // Visit the node
-            path = visitNext(result->x, result->y, end_x, end_y);
-        }
-
-        // Check if returned path has the end node at front 
-        if ((path.size() >= 1) 
-            && (path.front().x == end_x && path.front().y == end_y))
-        {
-            // Add current node to path and return
-            path.push_back(current_node);
-            return path;
-        }
-    }*/
-
-    std::cout << "Control reached end of visitNext\n";
+    // Visit next node
+    visitNext(next_x, next_y, end_x, end_y);
 }
 
 /* Algorithm - Check for next legal move starting with 1 o'clock position, 
@@ -289,12 +126,14 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
  */
  std::vector<Vertex> KnightGraph::getLegalMoves(Vertex start)
  {
+    std::cout << "Entered getLegalMoves()\n";
     std::vector<Vertex> legal_moves;
 
     // Check if move to 1 o'clock position is legal
     Vertex move(start.x + 1, start.y - 2);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 1\n";
         legal_moves.push_back(move);
     }
 
@@ -302,6 +141,7 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     move = Vertex(start.x + 2, start.y - 1);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 2\n";
         legal_moves.push_back(move);
     }
 
@@ -309,6 +149,7 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     move = Vertex(start.x + 2, start.y + 1);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 3\n";
         legal_moves.push_back(move);
     }
 
@@ -316,6 +157,7 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     move = Vertex(start.x + 1, start.y + 2);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 4\n";
         legal_moves.push_back(move);
     }
 
@@ -323,6 +165,7 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     move = Vertex(start.x - 1, start.y + 2);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 5\n";
         legal_moves.push_back(move);
     }
 
@@ -330,6 +173,7 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     move = Vertex(start.x - 2, start.y + 1);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 6\n";
         legal_moves.push_back(move);
     }
 
@@ -337,6 +181,7 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     move = Vertex(start.x - 2, start.y - 1);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 7\n";
         legal_moves.push_back(move);
     }
 
@@ -344,9 +189,11 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     move = Vertex(start.x - 1, start.y - 2);
     if (isLegalMove(start, move))
     {
+        std::cout << "About to push back pos 8\n";
         legal_moves.push_back(move);
     }
 
+    std::cout << "getLegalMoves(): About to return vector: legal_moves\n";
     return legal_moves;
 
  }
@@ -356,14 +203,18 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
  */
 bool KnightGraph::isLegalMove(Vertex start, Vertex end)
 {
+    std::cout << "Entered isLegalMove()\n";
     // Check legality of move
     bool print_board = false;
     std::vector<Vertex> move;
     
     move.push_back(start);
     move.push_back(end);
-    
-    return (m_validator->validateMoves(move, print_board));
+    std::cout << "isLegalMove(): About to call validateMoves()\n";
+    bool output = m_validator->validateMoves(move, print_board);
+    std::cout << "isLegalMove(): About to return output\n";
+    return (output);
+    // return (m_validator->validateMoves(move, print_board));
 }
 
 /* Algorithm - Return m_path

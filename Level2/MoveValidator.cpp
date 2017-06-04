@@ -33,6 +33,7 @@ bool MoveValidator::validateMoves(
         std::vector<Vertex> moves,
         bool print_moves)
 {
+    std::cout << "Entered MoveValidator validateMoves()\n";
     // Retrieve starting and ending points and set them to 'S' and 'E'
     if (moves.size() >= 1)
     {
@@ -75,6 +76,7 @@ bool MoveValidator::validateMoves(
                           << moves[i].y << ")\n";
                 std::cout << "The next move to (" << moves[i + 1].x << ", "
                           << moves[i + 1].y << ") is invalid.\n";
+                
                 i = moves.size();
                 all_moves_are_valid = false;
             }
@@ -86,7 +88,7 @@ bool MoveValidator::validateMoves(
     {
         std::cout << "All the moves were valid.\n";
     }
-
+    std::cout << "MoveValidator validateMoves(): About return all_moves_are_valid\n";
     return all_moves_are_valid;
 }
 
@@ -119,6 +121,7 @@ bool MoveValidator::checkMove(
         Vertex origin, 
         Vertex destination)
 {
+    std::cout << "Entered MoveValidator checkMove()\n";
     // Check if move is valid
     bool is_valid_shape   = false;
     bool dest_beyond_edge = false;
