@@ -31,7 +31,7 @@ struct Vertex
     Vertex(int x_in, int y_in) 
     : x(x_in), 
       y(y_in), 
-      distance(std::numeric_limits<int>::max()),
+      distance(-1),
       visited(false)
     {
         // Calculate vertex number from x and y coordinates
