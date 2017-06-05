@@ -83,11 +83,17 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
         unvisited_nodes = std::count_if(m_nodes.begin(), m_nodes.end(), 
             match_visited(false));
     }
+
+    // Reset visited status for all nodes
+    for (int i = 0; i < m_nodes.size(); i++)
+    {
+        m_nodes[i].visited = false;
+    }
 }
 
 /* Algorithm - Call dfsGraphBuild() to build the adjacency matrix
  *           - Call getAdjMatrix() to retrieve the adjacency matrix
- *           - Call      to use BFS to retrieve a shortest path to the end node
+ *           - Use BFS to retrieve a shortest path to the end node
  * 
  */
 void KnightGraph::bfsShortestPath(int start_x, int start_y, 
@@ -109,26 +115,15 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
         return;
     }
 
-    // Reset visited status for all nodes
-    for (int i = 0; i < m_nodes.size(); i++)
-    {
-        m_nodes[i].visited = false;
-    }
-
     // Enqueue the start node
     std::queue<Vertex> node_queue(m_node_queue);
     node_queue.push(m_nodes[start.number]);
-    // std::cout << "bfsShortestPath: BFS before while loop\n";
-    // std::cout << "m_nodes[start.number].parent_num= " 
-    //    << m_nodes[start.number].parent_num << "\n";
 
     // Conduct BFS search in loop 
     while (!node_queue.empty())
     {
         // Get a copy of the front node
         Vertex current = node_queue.front();
-        // std::cout << "bfsShortestPath: BFS while loop\n";
-        // std::cout << "current.parent_num= " << current.parent_num << "\n";
 
         // Check the adjacency matrix for connected nodes
         for (int i = 0; i < m_adj_matrix[current.number].size(); i++)
@@ -138,28 +133,11 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
                 auto result = std::find_if(
                     m_nodes.begin(), m_nodes.end(), match_num(i));
 
-                // std::cout << "bfsShortestPath: BFS while loop before update node\n";
-                //     std::cout << "result->visited= " 
-                //         << result->visited << "\n";
                 // Update node if it has not been visited
                 if (result != m_nodes.end() && !result->visited)
                 {
-                    // Enter new distance and parent node
-                    // std::cout << "bfsShortestPath: BFS while loop update node\n";
-                    // std::cout << "result->number= " 
-                    //     << result->number << "\n";
-                    // std::cout << "result->parent_num= " 
-                    //     << result->parent_num << "\n";
-                    // std::cout << "result->distance= " 
-                    //     << result->distance << "\n";
                     result->distance   = current.distance + 1;
                     result->parent_num = current.number;
-                    // std::cout << "result->number= " 
-                    //     << result->number << "\n";
-                    // std::cout << "result->parent_num= " 
-                    //     << result->parent_num << "\n";
-                    // std::cout << "result->distance= " 
-                    //     << result->distance << "\n";
 
                     // Enqueue the node
                     node_queue.push(m_nodes[i]);
@@ -183,22 +161,16 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
     int node_number = end.number;
     while (node_number != -1)
     {
-        // std::cout << "bfsShortestPath: About to push back node to path\n"
-        //     << "node_number= " << node_number << "\n";
         m_path.push_back(m_nodes[node_number]);
 
         // Set next node number to parent number of the current node
         if (node_number == start.number)
         {
-            // std::cout << "bfsShortestPath: If statement\n";
             node_number = -1;
         }
         else
         {
-            // std::cout << "bfsShortestPath: Else statement\n";
             int next_node_number = m_nodes[node_number].parent_num;
-            // std::cout << "bfsShortestPath: next_node_number= "
-            //     << next_node_number << "\n";
             node_number = next_node_number;
         }
     }
@@ -219,7 +191,6 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
  */
 void KnightGraph::dfsVisitNext(int start_x, int start_y)
 {
-    // std::cout << "Entered dfsVisitNext()\n";
     // Create Vertex for current node
     Vertex current_node(start_x, start_y);
 
