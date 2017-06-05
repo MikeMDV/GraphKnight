@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <iostream>
+#include <limits>
 
 #include "CommonDefs.h"
 #include "MoveValidator.h"
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
     // Comment above and uncomment below to test no board printing
     // bool printBoard = false;
 
-    bool areValidMoves = validator.validateMoves(moves, printBoard);
+    validator.validateMoves(moves, printBoard);
 
     return 0;
 }
