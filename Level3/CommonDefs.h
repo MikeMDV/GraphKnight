@@ -31,7 +31,8 @@ struct Vertex
     Vertex(int x_in, int y_in) 
     : x(x_in), 
       y(y_in), 
-      distance(std::numeric_limits<int>::max()),
+      distance(0),
+      parent_num(-1),
       visited(false)
     {
         // Calculate vertex number from x and y coordinates
@@ -67,6 +68,22 @@ struct match_num : std::unary_function<Vertex, bool>
     inline bool operator() (const Vertex& v)
     {
         return (v.number == num);
+    }
+};
+
+/* Brief desc. - A function object for matching Vertex structs based on visited
+ *               status
+ * Details     - For use with STL algorithms requiring a unary predicate; Will
+ *               return true if visited equals boolean value passed as param
+ *
+ */
+struct match_visited : std::unary_function<Vertex, bool>
+{
+    bool is_vis;
+    match_visited(bool is_vis):is_vis(is_vis){}
+    inline bool operator() (const Vertex& v)
+    {
+        return (v.visited == is_vis);
     }
 };
 

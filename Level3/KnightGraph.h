@@ -3,10 +3,11 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 06/03/17
+ *  Date Last Modified: 06/04/17
  *
  */
 
+#include <deque>
 #include <vector>
 #include <iostream>
 
@@ -23,18 +24,18 @@ public:
     // Destructor
     ~KnightGraph();
 
-    /* Brief desc.       - A method to find a path to the end using depth-first 
-     *                     search
+    /* Brief desc.       - A method to find a path to the end using a modified 
+     *                     depth-first search
+     * Note              - dfsGraphBuild() assumes the graph is unweighted
      * param[in] x_start - X coordinate of the starting node
      * param[in] y_start - Y coordinate of the starting node
-     * param[in] x_end   - X coordinate of the ending node
-     * param[in] y_end   - Y coordinate of the ending node
      *
      */
     void dfsGraphBuild(int start_x, int start_y);
 
     /* Brief desc.       - A method to find a shortest path to the end using 
      *                     breadth-first search
+     * Note              - bfsShortestPath() assumes the graph is unweighted
      * param[in] x_start - X coordinate of the starting node
      * param[in] y_start - Y coordinate of the starting node
      * param[in] x_end   - X coordinate of the ending node
@@ -51,15 +52,18 @@ public:
 
 private:
 
-    /* Brief desc.       - A recursive method to visit nodes and build the path 
-     *                     to the end node
+    /* Brief desc.       - A recursive method to visit nodes and build the
+     *                     adjacency matrix
      * param[in] start_x - X coordinate of the starting node
      * param[in] start_y - Y coordinate of the starting node
-     * param[in] end_x   - X coordinate of the ending node
-     * param[in] end_y   - Y coordinate of the ending node
      *
      */
     void dfsVisitNext(int start_x, int start_y);
+
+    /* Brief desc. - A method to retrieve the adjacency matrix 
+     *
+     */
+    std::vector<std::vector<int> > getAdjMatrix();
 
     // Attributes
     MoveValidator *m_validator;
@@ -70,7 +74,11 @@ private:
 
     std::vector<Vertex> m_path;
 
-    std::vector<std::vector<int> > *m_adj_matrix;
+    std::deque<Vertex> m_node_queue;
+
+    int m_node_count;
+
+    std::vector<std::vector<int> > m_adj_matrix;
 
 };
 

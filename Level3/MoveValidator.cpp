@@ -4,7 +4,8 @@
  *
  */
 
-#include <string>
+#include <iostream>
+#include <vector>
 
 #include "MoveValidator.h"
 

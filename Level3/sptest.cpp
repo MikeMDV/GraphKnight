@@ -31,10 +31,10 @@ int main(int argc, char *argv[])
 
     // int start_x = -1;
     // int start_y = 88;
-    int start_x = 2;
-    int start_y = 2;
-    int end_x   = 3;
-    int end_y   = 0;
+    int start_x = 0;
+    int start_y = 0;
+    int end_x   = 7;
+    int end_y   = 7;
 
     graph->bfsShortestPath(start_x, start_y, end_x, end_y);
     
