@@ -103,7 +103,7 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
     bool start_is_on_board = m_validator->onBoard(start);
     bool end_is_on_board   = m_validator->onBoard(end);
 
-    if (!start_is_on_board && !end_is_on_board)
+    if (!start_is_on_board || !end_is_on_board)
     {
         std::cout << "Start or end node is invalid.\n";
         return;
