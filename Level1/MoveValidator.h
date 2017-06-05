@@ -35,6 +35,14 @@ public:
         std::vector<Vertex> moves,
         bool print_moves);
 
+    /* Brief desc.        - A method to verify a position is on the board 
+     * param[in] position - Vertex representing the position needing checked
+     *
+     * param[out]         - Returns true if the position is on the board
+     *
+     */
+    bool onBoard(Vertex position);
+
 private:
 
     /* Brief desc.     - A function to print the board to stdout

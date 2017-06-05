@@ -34,8 +34,23 @@ bool MoveValidator::validateMoves(
         bool print_moves)
 {
     // Retrieve starting and ending points and set them to 'S' and 'E'
-    m_board[moves.front().y][moves.front().x] = 'S';
-    m_board[moves.back().y][moves.back().x]   = 'E';
+    if (!moves.empty())
+    {
+        if (onBoard(moves.front()))
+        {
+            m_board[moves.front().y][moves.front().x] = 'S';
+        }
+        if (onBoard(moves.back()))
+        {
+            m_board[moves.back().y][moves.back().x]   = 'E';
+        }
+        
+    }
+    else
+    {
+        // Empty moves path provided; Return false
+        return false;
+    }
 
     if (print_moves)
     {
@@ -48,7 +63,10 @@ bool MoveValidator::validateMoves(
     for (unsigned int i = 0; i < moves.size(); i++)
     {
         // Set current knight position to 'K' on board
-        m_board[moves[i].y][moves[i].x] = 'K';
+        if (onBoard(moves[i]))
+        {
+            m_board[moves[i].y][moves[i].x] = 'K';
+        }
 
         // Print board if necessary
         if (print_moves)
