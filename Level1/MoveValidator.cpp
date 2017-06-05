@@ -4,7 +4,7 @@
  *
  */
 
-#include <string>
+#include <vector>
 
 #include "MoveValidator.h"
 
@@ -45,7 +45,7 @@ bool MoveValidator::validateMoves(
     bool all_moves_are_valid = true;
     bool is_valid_move       = true;
 
-    for (int i = 0; i < moves.size(); i++)
+    for (unsigned int i = 0; i < moves.size(); i++)
     {
         // Set current knight position to 'K' on board
         m_board[moves[i].y][moves[i].x] = 'K';
@@ -88,9 +88,9 @@ bool MoveValidator::validateMoves(
 void MoveValidator::printBoard(std::vector<std::vector<char> > board)
 {
     // Loop through board and print each character
-    for (int i = 0; i < board.size(); i++)
+    for (unsigned int i = 0; i < board.size(); i++)
     {
-        for (int j = 0; j < board[i].size(); j++)
+        for (unsigned int j = 0; j < board[i].size(); j++)
         {
             std::cout << board[i][j] << " ";
         }
@@ -139,8 +139,10 @@ bool MoveValidator::checkMove(
     }
 
     // Check if destination is beyond the edge of the board
-    if ((destination.x < 0 || destination.x > (m_board[0].size() - 1))
-        || (destination.y < 0 || destination.y > (m_board.size() - 1)))
+    if ((destination.x < 0 
+        || destination.x > static_cast<int>(m_board[0].size() - 1))
+        || (destination.y < 0 
+        || destination.y > static_cast<int>(m_board.size() - 1)))
     {
         dest_beyond_edge = true;
     }
