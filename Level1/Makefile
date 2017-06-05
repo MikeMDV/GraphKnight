@@ -14,10 +14,10 @@ PROGS=mvtest
 
 all: $(PROGS)
 
-mvtest : mvtest.o movevalidator.o
-	$(CC) $(CFLAGS) movevalidator.o mvtest.o -o mvtest
+mvtest : mvtest.o MoveValidator.o
+	$(CC) $(CFLAGS) MoveValidator.o mvtest.o -o mvtest
     
-movevalidator.o : MoveValidator.cpp MoveValidator.h CommonDefs.h
+MoveValidator.o : MoveValidator.cpp MoveValidator.h CommonDefs.h
 	$(CC) $(CFLAGS) -c -std=c++0x MoveValidator.cpp
 
 mvtest.o : mvtest.cpp MoveValidator.h CommonDefs.h
