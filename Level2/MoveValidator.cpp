@@ -4,7 +4,7 @@
  *
  */
 
-#include <string>
+#include <vector>
 
 #include "MoveValidator.h"
 
@@ -58,7 +58,7 @@ bool MoveValidator::validateMoves(std::vector<Vertex> moves, bool print_moves)
     bool all_moves_are_valid = true;
     bool is_valid_move       = true;
 
-    for (int i = 0; i < moves.size(); i++)
+    for (unsigned int i = 0; i < moves.size(); i++)
     {
         // Set current knight position to 'K' on board
         if (onBoard(moves[i]))
@@ -177,8 +177,8 @@ bool MoveValidator::onBoard(Vertex position)
 {
     bool position_is_on_board = true;
 
-    if ((position.x < 0 || position.x >= m_board[0].size())
-        || (position.y < 0 || position.y >= m_board.size()))
+    if ((position.x < 0 || position.x >= static_cast<int>(m_board[0].size()))
+        || (position.y < 0 || position.y >= static_cast<int>(m_board.size())))
     {
         position_is_on_board = false;
     }
@@ -192,9 +192,9 @@ bool MoveValidator::onBoard(Vertex position)
 void MoveValidator::printBoard(std::vector<std::vector<char> > board)
 {
     // Loop through board and print each character
-    for (int i = 0; i < board.size(); i++)
+    for (unsigned int i = 0; i < board.size(); i++)
     {
-        for (int j = 0; j < board[i].size(); j++)
+        for (unsigned int j = 0; j < board[i].size(); j++)
         {
             std::cout << board[i][j] << " ";
         }
