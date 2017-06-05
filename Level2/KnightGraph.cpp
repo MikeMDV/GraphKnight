@@ -5,6 +5,7 @@
  */
 
 #include <iostream>
+#include <algorithm>
 
 #include "KnightGraph.h"
 
@@ -13,9 +14,9 @@ KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     : m_board(board)
 {
     // Construct vector of Vertex structs
-    for (int i = 0; i < m_board.size(); i++)
+    for (unsigned int i = 0; i < m_board.size(); i++)
     {
-        for (int j = 0; j < m_board[0].size(); j++)
+        for (unsigned int j = 0; j < m_board[0].size(); j++)
         {
             Vertex vert(j, i);
             m_nodes.push_back(vert);
@@ -94,7 +95,7 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
 
     // Check for first unvisited legal move
     int position = -1;
-    for (int i = 0; i < legal_moves.size(); i++)
+    for (unsigned int i = 0; i < legal_moves.size(); i++)
     {
         auto result = std::find_if(
             std::begin(m_nodes), std::end(m_nodes), 
