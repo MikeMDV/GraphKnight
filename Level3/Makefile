@@ -14,13 +14,13 @@ PROGS=sptest
 
 all: $(PROGS)
 
-sptest : sptest.o knightgraph.o movevalidator.o
-	$(CC) $(CFLAGS) knightgraph.o sptest.o movevalidator.o -o sptest
+sptest : sptest.o KnightGraph.o MoveValidator.o
+	$(CC) $(CFLAGS) KnightGraph.o sptest.o MoveValidator.o -o sptest
     
-knightgraph.o : KnightGraph.cpp KnightGraph.h MoveValidator.h CommonDefs.h
+KnightGraph.o : KnightGraph.cpp KnightGraph.h MoveValidator.h CommonDefs.h
 	$(CC) $(CFLAGS) -c -std=c++0x KnightGraph.cpp
 
-movevalidator.o : MoveValidator.cpp MoveValidator.h CommonDefs.h
+MoveValidator.o : MoveValidator.cpp MoveValidator.h CommonDefs.h
 	$(CC) $(CFLAGS) -c -std=c++0x MoveValidator.cpp
 
 sptest.o : sptest.cpp KnightGraph.h MoveValidator.h CommonDefs.h
