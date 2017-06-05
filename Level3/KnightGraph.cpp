@@ -19,9 +19,9 @@ KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     m_adj_matrix(m_node_count, std::vector<int>(m_node_count, 0))
 {
     // Construct vector of Vertex structs
-    for (int i = 0; i < m_board.size(); i++)
+    for (unsigned int i = 0; i < m_board.size(); i++)
     {
-        for (int j = 0; j < m_board[0].size(); j++)
+        for (unsigned int j = 0; j < m_board[0].size(); j++)
         {
             Vertex vert(j, i);
             m_nodes.push_back(vert);
@@ -85,7 +85,7 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
     }
 
     // Reset visited status for all nodes
-    for (int i = 0; i < m_nodes.size(); i++)
+    for (unsigned int i = 0; i < m_nodes.size(); i++)
     {
         m_nodes[i].visited = false;
     }
@@ -126,7 +126,7 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
         Vertex current = node_queue.front();
 
         // Check the adjacency matrix for connected nodes
-        for (int i = 0; i < m_adj_matrix[current.number].size(); i++)
+        for (unsigned int i = 0; i < m_adj_matrix[current.number].size(); i++)
         {
             if (m_adj_matrix[current.number][i] == 1)
             {
@@ -206,14 +206,14 @@ void KnightGraph::dfsVisitNext(int start_x, int start_y)
     std::vector<Vertex> legal_moves = m_validator->getLegalMoves(current_node);
 
     // Add node connections to adjancency matrix
-    for (int i = 0; i < legal_moves.size(); i++)
+    for (unsigned int i = 0; i < legal_moves.size(); i++)
     {
         m_adj_matrix[current_node.number][legal_moves[i].number] = 1;
     }
 
     // Check for first unvisited legal move
     int position = -1;
-    for (int i = 0; i < legal_moves.size(); i++)
+    for (unsigned int i = 0; i < legal_moves.size(); i++)
     {
         auto result = std::find_if(m_nodes.begin(), m_nodes.end(), 
             match_num(legal_moves[i].number));
