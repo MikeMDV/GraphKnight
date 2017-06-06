@@ -169,7 +169,7 @@ bool MoveValidator::validateMoves(std::vector<Vertex> moves, bool print_moves)
     return legal_moves;
  }
 
- /* Algorithm - Check if position is valid; Position is valid if it is located 
+/* Algorithm - Check if position is valid; Position is valid if it is located 
  *             on the board
  * 
  */

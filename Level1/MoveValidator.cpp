@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 5/26/17
+ *  Date Last Modified: 06/05/17
  *
  */
 
@@ -98,6 +98,23 @@ bool MoveValidator::validateMoves(
     }
 
     return all_moves_are_valid;
+}
+
+/* Algorithm - Check if position is valid; Position is valid if it is located 
+ *             on the board
+ * 
+ */
+bool MoveValidator::onBoard(Vertex position)
+{
+    bool position_is_on_board = true;
+
+    if ((position.x < 0 || position.x >= static_cast<int>(m_board[0].size()))
+        || (position.y < 0 || position.y >= static_cast<int>(m_board.size())))
+    {
+        position_is_on_board = false;
+    }
+
+    return position_is_on_board;
 }
 
 /* Algorithm - Loop through each row and print each character

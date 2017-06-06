@@ -108,8 +108,8 @@ void KnightGraph::visitNext(int start_x, int start_y, int end_x, int end_y)
     }
 
     // Determine next node
-    int next_x;
-    int next_y;
+    int next_x = -1;
+    int next_y = -1;
 
     if (position != -1)
     {
