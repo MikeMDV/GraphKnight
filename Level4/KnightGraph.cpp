@@ -373,7 +373,7 @@ void KnightGraph::dfsVisitNext(int start_x, int start_y)
             }
             case 'T': // Teleport node - connect to other teleport node
             {
-                // Retrieve other T node x and y value
+                // Retrieve other T node number
                 Vertex teleport_node = 
                     m_validator->getTeleportNode(legal_moves[i]);
                 // Add connection to retrieved node in matrix rather than 
