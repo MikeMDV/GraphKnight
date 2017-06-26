@@ -59,8 +59,8 @@ struct greater_dist
     inline bool operator() (const Vertex& struct_1, const Vertex& struct_2)
     {
         return (struct_1.distance > struct_2.distance) 
-                || ((struct_1.distance == struct_2.distance)
-                    && (struct_1.number > struct_2.number));
+                || (struct_1.distance == struct_2.distance
+                    && struct_1.number > struct_2.number);
     }
 };
 

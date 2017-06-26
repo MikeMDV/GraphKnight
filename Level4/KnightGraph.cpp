@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 06/25/17
+ *  Date Last Modified: 06/26/17
  *
  */
 
@@ -12,7 +12,8 @@
 
 #include "KnightGraph.h"
 
-
+// TODO: Handle case in which starting or ending nodes are barriers, rocks
+// TODO: Handle case in which the starting or ending nodes are teleport nodes
 KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     : m_board(board),
     m_board_row_size(m_board[0].size()),
@@ -51,7 +52,6 @@ KnightGraph::~KnightGraph()
  */
 void KnightGraph::dfsGraphBuild(int start_x, int start_y)
 {
-    // std::cout << "KnightGraph::dfsGraphBuild - Entered\n";
     // Verify start node is on board
     Vertex start(start_x, start_y, m_board_row_size);
     bool start_is_on_board = m_validator->isOnBoard(start);
@@ -64,17 +64,6 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
 
     // Call visitNext() to use DFS to build adjacency matrix
     dfsVisitNext(start_x, start_y);
-
-    // // Diagnostic print adj matrix
-    // for (int i = 0; i < m_adj_matrix.size(); i++)
-    // {
-    //     for (int j = 0; j < m_adj_matrix[0].size(); j++)
-    //     {
-    //         std::cout << m_adj_matrix[i][j];
-    //     }
-    //     std::cout << "  " << i << "\n";
-    // }
-    // std::cout << "\n";
 
     // Reset visited status for all nodes
     for (unsigned int i = 0; i < m_nodes.size(); i++)
@@ -92,6 +81,8 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
  *               becomes distance of the current node + 1; the parent of the 
  *               neighbors is changed to the current vertex; Enqueue the current
  *               node
+ *             - Once the FIFO queue is empty build the path in reverse order
+ *               from the destination to the source
  * 
  */
 void KnightGraph::bfsShortestPath(int start_x, int start_y, 
@@ -176,22 +167,161 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
     // Reverse order of path
     std::reverse(m_path.begin(), m_path.end());
 }
-// TODO: Change algo description
-/* Algorithm - Mark current node visited
+
+/* Algorithm - Call dfsGraphBuild() to build the adjacency matrix
+ *           - Confirm the start and end points are on the board
+ *           - Use Dijkstra's algo to retrieve a shortest path to the end node
+ *             - Set the start Vertex distance to 0
+ *             - Copy m_nodes to m_nodes_queue and set up a min heap
+ *             - While the node queue contains nodes, extract the node with the
+ *               min distance; mark the node visited; relax the edges of the 
+ *               connected nodes by making their distance the current node's 
+ *               distance + the value from the adj matrix, then changing the 
+ *               parent to the current vertex, as long as the current node 
+ *               distance + the adj matrix value is less than the node's 
+ *               distance
+ *             - Once the min-priority queue is empty build the path in reverse 
+ *               order from the destination to the source
+ *
+ * Note      - The STL make_heap places the largest element at the top by 
+ *             default, using comparison function that returns the smaller of 
+ *             two types. A comparison returning the larger type will result in 
+ *             a min heap.
+ *           - m_node_queue will be the min-priority queue and m_nodes will be 
+ *             the set of visited nodes
+ *           - When building the path, if a teleport node is encountered, the 
+ *             parent of the teleport node must be the other teleport node, so 
+ *             it will need to be inserted in the path.
+ * 
+ */
+void KnightGraph::daShortestPath(int start_x, int start_y, int end_x, int end_y)
+{
+    // Build the adjacency matrix
+    dfsGraphBuild(start_x, start_y);
+
+    // Verify start and end Vertex structs are on board
+    Vertex start(start_x, start_y, m_board_row_size);
+    Vertex end(end_x, end_y, m_board_row_size);
+
+    bool start_is_on_board = m_validator->isOnBoard(start);
+    bool end_is_on_board   = m_validator->isOnBoard(end);
+
+    if (!start_is_on_board || !end_is_on_board)
+    {
+        std::cout << "Start or end node is invalid.\n";
+        return;
+    }
+
+    // Set the distance for the start node to 0
+    auto result = std::find_if(
+        m_nodes.begin(), m_nodes.end(), match_num(start.number));
+    if (result != m_nodes.end())
+    {
+        result->distance = 0;
+    }
+    
+    // Copy all nodes in m_nodes to queue and create a min heap
+    for (unsigned int i = 0; i < m_nodes.size(); i++)
+    {
+        m_node_queue.push_back(m_nodes[i]);
+    }
+    std::make_heap(m_node_queue.begin(), m_node_queue.end(), greater_dist());
+
+    // Use Dijkstra's algorithm to find the shortest path
+    while (!m_node_queue.empty())
+    {
+        // Get a copy of the front node
+        Vertex current = m_node_queue.front();
+
+        // Mark current node visited
+        auto result = std::find_if(
+            m_nodes.begin(), m_nodes.end(), match_num(current.number));
+        if (result != m_nodes.end())
+        {
+            result->visited = true;
+        }
+
+        // Check the adjacency matrix for connected nodes and relax edges
+        for (unsigned int i = 0; i < m_adj_matrix[current.number].size(); i++)
+        {
+            if (m_adj_matrix[current.number][i] > 0)
+            {
+                // Update node if the current node distance + adj matrix value
+                // is less than the connected node's distance
+                auto result = std::find_if(
+                    m_node_queue.begin(), m_node_queue.end(), match_num(i));
+
+                if (result != m_node_queue.end() 
+                    && (current.distance + m_adj_matrix[current.number][i])
+                        < result->distance)
+                {
+                    // Update distance in m_node_queue
+                    result->distance = current.distance 
+                        + m_adj_matrix[current.number][i];
+
+                    // Update parent node in m_nodes
+                    auto m_node_result = std::find_if(
+                        m_nodes.begin(), m_nodes.end(), match_num(i));
+                    if (m_node_result != m_nodes.end())
+                    {
+                        m_node_result->parent_num = current.number;
+                    }
+                }
+            }
+        }
+
+        // Make heap again since changing distance values may have affected heap
+        std::make_heap(m_node_queue.begin(), m_node_queue.end(), greater_dist());
+
+        // Pop the current node off the top of the heap
+        std::pop_heap(m_node_queue.begin(), m_node_queue.end(), greater_dist());
+        m_node_queue.pop_back();
+    }
+
+    // Build path in reverse order
+    int node_number = end.number;
+    while (node_number != -1)
+    {
+        m_path.push_back(m_nodes[node_number]);
+
+        // Set next node number to parent number of the current node
+        if (node_number == start.number)
+        {
+            node_number = -1;
+        }
+        else if (m_board[m_nodes[node_number].y][m_nodes[node_number].x] == 'T')
+        {
+            // Other teleport node must be inserted in path
+            Vertex other_teleport_node = 
+                m_validator->getTeleportNode(m_nodes[node_number]);
+            int node_after_teleport_number = m_nodes[node_number].parent_num;
+            m_path.push_back(m_nodes[other_teleport_node.number]);
+            node_number = node_after_teleport_number;
+        }
+        else
+        {
+            int next_node_number = m_nodes[node_number].parent_num;
+            node_number = next_node_number;
+        }
+    }
+
+    // Reverse order of path
+    std::reverse(m_path.begin(), m_path.end());
+}
+
+/* Algorithm - Mark current node visited and add to m_path
  *           - Get the legal moves available from the current node
  *           - Add node connections to adjancency matrix
  *           - Check for the first node of the returned list of moves that has 
  *             not been visited
- *           - If no unvisited legal moves exist, return (base case)
+ *           - If no unvisited legal moves exist, move back one node and check 
+ *             for unvisited nodes
  *           - Otherwise, set next_x and next_y to the next unvisited legal move
  *           - Visit next_x and next_y (recursive call)
  * 
  */
 void KnightGraph::dfsVisitNext(int start_x, int start_y)
 {
-    // std::cout << "KnightGraph::dfsVisitNext - Entered\n";
-    // TODO: Erase diagnostic prints
-    // TODO: Not all squares are visited?
     // Create Vertex for current node
     Vertex current_node(start_x, start_y, m_board_row_size);
 

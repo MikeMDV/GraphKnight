@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 06/25/17
+ *  Date Last Modified: 06/26/17
  *
  */
 
@@ -83,41 +83,31 @@ int main(int argc, char *argv[])
            '.','.','.','.','.','.','R','R','.','.','.','.','.','.','.','.'},//31
         };
 
-    // std::vector<std::vector<char> > board = 
-    //     { {'.', '.', '.', '.', '.', '.', '.', '.'},
-    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
-    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
-    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
-    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
-    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
-    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
-    //       {'.', '.', '.', '.', '.', '.', '.', '.'} };
-
-    // MoveValidator *validator = new MoveValidator(board);
+    MoveValidator *validator = new MoveValidator(board);
     KnightGraph   *graph     = new KnightGraph(board);
 
     // int start_x = -1;
     // int start_y = 88;
-    int start_x = 0;
-    int start_y = 0;
-    // int end_x   = 7;
-    // int end_y   = 7;
+    int start_x = 15;
+    int start_y = 3;
+    int end_x   = 0;
+    int end_y   = 31;
 
-    graph->dfsGraphBuild(start_x, start_y);
-    // graph->bfsShortestPath(start_x, start_y, end_x, end_y);
+    // graph->dfsGraphBuild(start_x, start_y);
+    graph->daShortestPath(start_x, start_y, end_x, end_y);
     
-    // std::vector<Vertex> moves = graph->getPathToEnd();
+    std::vector<Vertex> moves = graph->getPathToEnd();
     
-    // bool printBoard = true;
-    // // Comment above and uncomment below to test no board printing
-    // // bool printBoard = false;
-    // validator->validateMoves(moves, printBoard);
+    bool printBoard = true;
+    // Comment above and uncomment below to test no board printing
+    // bool printBoard = false;
+    validator->validateMoves(moves, printBoard);
 
-    // // Delete pointers
-    // if (validator)
-    // {
-    //     delete validator;
-    // }
+    // Delete pointers
+    if (validator)
+    {
+        delete validator;
+    }
 
     if (graph)
     {

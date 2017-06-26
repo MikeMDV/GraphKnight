@@ -119,6 +119,9 @@ private:
 
     int m_board_row_size;
 
+    Vertex *m_teleport_node_one;
+    Vertex *m_teleport_node_two;
+
 };
 
 #endif // MOVE_VALIDATOR_H

@@ -44,6 +44,16 @@ public:
      */
     void bfsShortestPath(int start_x, int start_y, int end_x, int end_y);
 
+    /* Brief desc.       - A method to find a shortest path to the end using 
+     *                     Dijkstra's algorithm
+     * param[in] x_start - X coordinate of the starting node
+     * param[in] y_start - Y coordinate of the starting node
+     * param[in] x_end   - X coordinate of the ending node
+     * param[in] y_end   - Y coordinate of the ending node
+     *
+     */
+    void daShortestPath(int start_x, int start_y, int end_x, int end_y);
+
     /* Brief desc. - A method to retrieve the path of moves to the end node 
      *
      */

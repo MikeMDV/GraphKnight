@@ -13,7 +13,30 @@ MoveValidator::MoveValidator(std::vector<std::vector<char> > board)
     : m_board(board),
     m_board_row_size(m_board[0].size())
 {
-    // Empty
+    // Find first teleport node
+    for (unsigned int i = 0; i < m_board.size(); i++)
+    {
+        for (unsigned int j = 0; j < m_board[0].size(); j++)
+        {
+            if (m_board[i][j] == 'T')
+            {
+                m_teleport_node_one = new Vertex(j, i, m_board_row_size);
+            }
+        }
+    }
+
+    // Find second teleport node
+    for (unsigned int i = 0; i < m_board.size(); i++)
+    {
+        for (unsigned int j = 0; j < m_board[0].size(); j++)
+        {
+            if (m_board[i][j] == 'T' 
+                && (i != m_teleport_node_one->y || j != m_teleport_node_one->x))
+            {
+                m_teleport_node_two = new Vertex(j, i, m_board_row_size);
+            }
+        }
+    }
 }
 
 MoveValidator::~MoveValidator()
@@ -33,7 +56,6 @@ MoveValidator::~MoveValidator()
  */
 bool MoveValidator::validateMoves(std::vector<Vertex> moves, bool print_moves)
 {
-    // std::cout << "MoveValidator::validateMoves - Entered\n";
     // Retrieve starting and ending points and set them to 'S' and 'E'
     if (!moves.empty())
     {
@@ -75,7 +97,7 @@ bool MoveValidator::validateMoves(std::vector<Vertex> moves, bool print_moves)
             printBoard(m_board);
         }
 
-        // If another move is present, check if it is valid 
+        // If a move is present, check if it is valid 
         if (i < (moves.size() - 1))
         {
             is_valid_move = checkMove(moves[i], moves[i + 1]);
@@ -223,34 +245,29 @@ bool MoveValidator::isBarrier(Vertex position)
     return position_is_barrier;
 }
 
-/* Algorithm - Find the other teleport node
- *           - Create a Vertex for the return teleport node
- *           - Return the teleport node that is connected to position
+/* Algorithm - Return the teleport node that is connected to position
  * 
  */
 Vertex MoveValidator::getTeleportNode(Vertex position)
 {
-    // Find the other teleport node and return it
-    int teleport_x = -1;
-    int teleport_y = -1;
     if (isOnBoard(position))
     {
-        for (unsigned int i = 0; i < m_board.size(); i++)
+        if (isOnBoard(position) && position.number == m_teleport_node_one->number)
         {
-            for (unsigned int j = 0; j < m_board[0].size(); j++)
-            {
-                if (m_board[i][j] == 'T' 
-                    && (i != position.y || j != position.x))
-                {
-                    teleport_x = j;
-                    teleport_y = i;
-                }
-            }
+            return *m_teleport_node_two;
+        }
+        else
+        {
+            return *m_teleport_node_one;
         }
     }
-
-    Vertex other_teleport_node(teleport_x, teleport_y, m_board_row_size);
-    return other_teleport_node;
+    else
+    {
+        // This shouldn't happen
+        std::cout << "Unexpected error in getTeleportNode\n";
+        Vertex error(-1, -1, -1);
+        return error;
+    }
 }
 
 /* Algorithm - Loop through each row and print each character
@@ -278,6 +295,9 @@ void MoveValidator::printBoard(std::vector<std::vector<char> > board)
  *             located beyond the edge of the board; The destination must not be
  *             a rock; The destination must not be a barrier and a barrier must
  *             not lie within the path of the move
+ *
+ * Note      - If the destination is a teleport node, the origin must be a
+ *             teleport node; If both are teleport nodes, the move is valid
  * 
  */
 bool MoveValidator::checkMove(Vertex origin, Vertex destination)
@@ -340,6 +360,15 @@ bool MoveValidator::checkMove(Vertex origin, Vertex destination)
     if (is_valid_shape && dest_on_board && !dest_is_rock && !dest_is_barrier
         && !dest_is_blocked)
     {
+        tests_passed = true;
+    }
+    else if (dest_on_board 
+            && ((origin.number == m_teleport_node_one->number 
+            && destination.number == m_teleport_node_two->number)
+            || (origin.number == m_teleport_node_two->number 
+            && destination.number == m_teleport_node_one->number)))
+    {
+        // Both nodes are teleport nodes, the move is valid
         tests_passed = true;
     }
 
