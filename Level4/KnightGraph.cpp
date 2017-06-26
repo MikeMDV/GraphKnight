@@ -12,7 +12,6 @@
 
 #include "KnightGraph.h"
 
-// TODO: Handle case in which starting or ending nodes are barriers, rocks
 // TODO: Handle case in which the starting or ending nodes are teleport nodes
 KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     : m_board(board),
@@ -88,21 +87,20 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
 void KnightGraph::bfsShortestPath(int start_x, int start_y, 
     int end_x, int end_y)
 {
+    // Verify start and end Vertex structs are on board    
+    Vertex start(start_x, start_y, m_board_row_size);    
+    Vertex end(end_x, end_y, m_board_row_size);
+    
+    bool start_is_on_board = m_validator->isOnBoard(start);    
+    bool end_is_on_board   = m_validator->isOnBoard(end);
+    if (!start_is_on_board || !end_is_on_board)    
+    {        
+        std::cout << "Start or end node is invalid.\n";
+        return;    
+    }
+    
     // Build the adjacency matrix
     dfsGraphBuild(start_x, start_y);
-
-    // Verify start and end Vertex structs are on board
-    Vertex start(start_x, start_y, m_board_row_size);
-    Vertex end(end_x, end_y, m_board_row_size);
-
-    bool start_is_on_board = m_validator->isOnBoard(start);
-    bool end_is_on_board   = m_validator->isOnBoard(end);
-
-    if (!start_is_on_board || !end_is_on_board)
-    {
-        std::cout << "Start or end node is invalid.\n";
-        return;
-    }
 
     // Enqueue the start node
     std::queue<Vertex> node_queue(m_node_queue);
@@ -199,14 +197,19 @@ void KnightGraph::daShortestPath(int start_x, int start_y, int end_x, int end_y)
     // Build the adjacency matrix
     dfsGraphBuild(start_x, start_y);
 
-    // Verify start and end Vertex structs are on board
+    // Verify start and end Vertex structs are on board and legal
     Vertex start(start_x, start_y, m_board_row_size);
     Vertex end(end_x, end_y, m_board_row_size);
 
     bool start_is_on_board = m_validator->isOnBoard(start);
     bool end_is_on_board   = m_validator->isOnBoard(end);
+    bool start_is_rock     = m_validator->isRock(start);
+    bool end_is_rock       = m_validator->isRock(end);
+    bool start_is_barrier  = m_validator->isBarrier(start);    
+    bool end_is_barrier    = m_validator->isBarrier(end);
 
-    if (!start_is_on_board || !end_is_on_board)
+    if (!start_is_on_board || !end_is_on_board || start_is_rock || end_is_rock 
+        || start_is_barrier || end_is_barrier)
     {
         std::cout << "Start or end node is invalid.\n";
         return;
