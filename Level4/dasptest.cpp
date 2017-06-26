@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     std::vector<Vertex> moves = graph->getPathToEnd();
     
     bool printBoard = true;
-    // Comment above and uncomment below to test no board printing
+    // Comment above and uncomment below to test without board printing
     // bool printBoard = false;
     validator->validateMoves(moves, printBoard);
 
