@@ -327,6 +327,8 @@ void KnightGraph::daShortestPath(int start_x, int start_y, int end_x, int end_y)
  *             not been visited
  *           - If no unvisited legal moves exist, move back one node and check 
  *             for unvisited nodes
+ *           - If beginning of path has been reached and no unvisited nodes 
+ *             exist, return (base case)
  *           - Otherwise, set next_x and next_y to the next unvisited legal move
  *           - Visit next_x and next_y (recursive call)
  * 
