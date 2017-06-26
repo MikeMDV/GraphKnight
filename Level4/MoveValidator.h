@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 06/04/17
+ *  Date Last Modified: 06/24/17
  *
  */
 
@@ -33,8 +33,7 @@ public:
      */
     bool validateMoves(std::vector<Vertex> moves, bool print_moves);
 
-    /* Brief desc.     - A method to return a set of legal moves from a
-     *                      position 
+    /* Brief desc.     - A method to return a set of legal moves from a position
      * param[in] start - Starting node
      *
      * param[out]      - Vector of Vertex structs representing the available 
@@ -43,13 +42,39 @@ public:
      */
     std::vector<Vertex> getLegalMoves(Vertex start);
 
-    /* Brief desc.        - A method to verify a position is on the board 
+    /* Brief desc.        - A method to verify a position is on the board
      * param[in] position - Vertex representing the position needing checked
      *
      * param[out]         - Returns true if the position is on the board
      *
      */
-    bool onBoard(Vertex position);
+    bool isOnBoard(Vertex position);
+
+    /* Brief desc.        - A method to verify a position is a rock
+     * param[in] position - Vertex representing the position needing checked
+     *
+     * param[out]         - Returns true if the position is a rock
+     *
+     */
+    bool isRock(Vertex position);
+
+    /* Brief desc.        - A method to verify a position is a barrier
+     * param[in] position - Vertex representing the position needing checked
+     *
+     * param[out]         - Returns true if the position is a barrier
+     *
+     */
+    bool isBarrier(Vertex position);
+
+    // TODO: Write getTeleportNode() method to retrieve other T node when 1 is
+    // given as a parameter
+    /* Brief desc.        - A method to retrieve the other teleport node
+     * param[in] position - Vertex representing the first teleport node
+     *
+     * param[out]         - Returns Vertex of the other connected teleport node
+     *
+     */
+    Vertex getTeleportNode(Vertex position);
 
 private:
 
@@ -81,13 +106,18 @@ private:
      * param[in] start - Starting node
      * param[in] end   - Ending node
      *
-     * param[out]      - True if the move was open - not blocked by a barrier
+     * param[out]      - True if the move was blocked by a barrier
+     *
+     * Note            - This method will not check if the destination node is a
+     *                   barrier
      *
      */
-    bool moveIsOpen(Vertex start, Vertex end);
+    bool moveIsBlocked(Vertex start, Vertex end);
 
     // Attributes
     std::vector<std::vector<char> > m_board;
+
+    int m_board_row_size;
 
 };
 

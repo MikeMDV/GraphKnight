@@ -3,18 +3,22 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 06/10/17
+ *  Date Last Modified: 06/24/17
  *
  */
 
 #include <limits>
+
+const int WATER_NODE_WEIGHT = 2;
+const int LAVA_NODE_WEIGHT  = 5;
 
 
 /* Brief desc.          - A struct to hold information for nodes in the Knight  
  *                        Board graphs
  * param[in] x          - X coordinate of the vertex
  * param[in] y          - Y coordinate of the vertex
- * param[in] distance   - Distance of the vertex from the source vertex 
+ * param[in] row_size   - Row size of board for number calculation
+ * param     distance   - Distance of the vertex from the source vertex 
  * param     number     - Number of the vertex
  * param     parent_num - Number of the parent/predecessor vertex
  * param     visited    - True if vertex was previously visited
@@ -30,7 +34,7 @@ struct Vertex
     bool visited; // Indicates whether vertex was previously visited 
 
     // Constructor
-    Vertex(int x_in, int y_in) 
+    Vertex(int x_in, int y_in, int row_size) 
     : x(x_in), 
       y(y_in), 
       distance(std::numeric_limits<int>::max()),
@@ -38,7 +42,7 @@ struct Vertex
       visited(false)
     {
         // Calculate vertex number from x and y coordinates
-        number = (y_in * 8) + x_in;
+        number = (y_in * row_size) + x_in;
     }
 };
 

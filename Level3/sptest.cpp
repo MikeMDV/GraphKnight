@@ -45,5 +45,16 @@ int main(int argc, char *argv[])
     // bool printBoard = false;
     validator->validateMoves(moves, printBoard);
 
+    // Delete pointers
+    if (validator)
+    {
+        delete validator;
+    }
+
+    if (graph)
+    {
+        delete graph;
+    }
+
     return 0;
 }

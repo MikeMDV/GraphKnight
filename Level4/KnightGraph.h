@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 06/04/17
+ *  Date Last Modified: 06/25/17
  *
  */
 
@@ -70,6 +70,8 @@ private:
     std::vector<Vertex> m_path;
 
     std::deque<Vertex> m_node_queue;
+
+    int m_board_row_size;
 
     int m_node_count;
 

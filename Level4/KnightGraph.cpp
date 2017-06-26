@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 06/04/17
+ *  Date Last Modified: 06/25/17
  *
  */
 
@@ -15,6 +15,7 @@
 
 KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     : m_board(board),
+    m_board_row_size(m_board[0].size()),
     m_node_count(m_board.size() * m_board[0].size()),
     m_adj_matrix(m_node_count, std::vector<int>(m_node_count, 0))
 {
@@ -23,7 +24,7 @@ KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     {
         for (unsigned int j = 0; j < m_board[0].size(); j++)
         {
-            Vertex vert(j, i);
+            Vertex vert(j, i, m_board_row_size);
             m_nodes.push_back(vert);
         }
     }
@@ -50,39 +51,30 @@ KnightGraph::~KnightGraph()
  */
 void KnightGraph::dfsGraphBuild(int start_x, int start_y)
 {
+    // std::cout << "KnightGraph::dfsGraphBuild - Entered\n";
     // Verify start node is on board
-    Vertex start(start_x, start_y);
-    bool start_is_on_board = m_validator->onBoard(start);
+    Vertex start(start_x, start_y, m_board_row_size);
+    bool start_is_on_board = m_validator->isOnBoard(start);
 
-    if (start_is_on_board)
-    {
-        // Call visitNext() to use DFS to build adjacency matrix
-        dfsVisitNext(start_x, start_y);
-    }
-    else
+    if (!start_is_on_board)
     {
         std::cout << "Start node is invalid.\n";
         return;
     }
 
-    // Get number of unvisited nodes remaining
-    auto unvisited_nodes = std::count_if(m_nodes.begin(), m_nodes.end(), 
-            match_visited(false));
+    // Call visitNext() to use DFS to build adjacency matrix
+    dfsVisitNext(start_x, start_y);
 
-    // Visit remaining unvisited nodes
-    while (unvisited_nodes != 0)
-    {
-        // Find first unvisited node
-        auto result = std::find_if(
-        m_nodes.begin(), m_nodes.end(), match_visited(false));
-
-        // Start DFS from the first unvisited node
-        dfsVisitNext(result->x, result->y);
-
-        // Get number of unvisited nodes remaining
-        unvisited_nodes = std::count_if(m_nodes.begin(), m_nodes.end(), 
-            match_visited(false));
-    }
+    // // Diagnostic print adj matrix
+    // for (int i = 0; i < m_adj_matrix.size(); i++)
+    // {
+    //     for (int j = 0; j < m_adj_matrix[0].size(); j++)
+    //     {
+    //         std::cout << m_adj_matrix[i][j];
+    //     }
+    //     std::cout << "  " << i << "\n";
+    // }
+    // std::cout << "\n";
 
     // Reset visited status for all nodes
     for (unsigned int i = 0; i < m_nodes.size(); i++)
@@ -109,11 +101,11 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
     dfsGraphBuild(start_x, start_y);
 
     // Verify start and end Vertex structs are on board
-    Vertex start(start_x, start_y);
-    Vertex end(end_x, end_y);
+    Vertex start(start_x, start_y, m_board_row_size);
+    Vertex end(end_x, end_y, m_board_row_size);
 
-    bool start_is_on_board = m_validator->onBoard(start);
-    bool end_is_on_board   = m_validator->onBoard(end);
+    bool start_is_on_board = m_validator->isOnBoard(start);
+    bool end_is_on_board   = m_validator->isOnBoard(end);
 
     if (!start_is_on_board || !end_is_on_board)
     {
@@ -184,7 +176,7 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
     // Reverse order of path
     std::reverse(m_path.begin(), m_path.end());
 }
-
+// TODO: Change algo description
 /* Algorithm - Mark current node visited
  *           - Get the legal moves available from the current node
  *           - Add node connections to adjancency matrix
@@ -197,15 +189,19 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
  */
 void KnightGraph::dfsVisitNext(int start_x, int start_y)
 {
+    // std::cout << "KnightGraph::dfsVisitNext - Entered\n";
+    // TODO: Erase diagnostic prints
+    // TODO: Not all squares are visited?
     // Create Vertex for current node
-    Vertex current_node(start_x, start_y);
+    Vertex current_node(start_x, start_y, m_board_row_size);
 
-    // Mark current node visited
+    // Mark current node visited and add to m_path
     auto result = std::find_if(
         m_nodes.begin(), m_nodes.end(), match_num(current_node.number));
     if (result != m_nodes.end())
     {
         result->visited = true;
+        m_path.push_back(current_node);
     }
 
     // Get available legal moves
@@ -214,7 +210,40 @@ void KnightGraph::dfsVisitNext(int start_x, int start_y)
     // Add node connections to adjancency matrix
     for (unsigned int i = 0; i < legal_moves.size(); i++)
     {
-        m_adj_matrix[current_node.number][legal_moves[i].number] = 1;
+        // Get the node tyoe of the legal move node
+        char node_type = m_board[legal_moves[i].y][legal_moves[i].x];
+
+        // Determine what the edge weight will be for the adj matrix connection
+        switch(node_type)
+        {
+            case 'W':
+            {
+                m_adj_matrix[current_node.number][legal_moves[i].number] 
+                    = WATER_NODE_WEIGHT;
+                break;
+            }
+            case 'L':
+            {
+                m_adj_matrix[current_node.number][legal_moves[i].number] 
+                    = LAVA_NODE_WEIGHT;
+                break;
+            }
+            case 'T': // Teleport node - connect to other teleport node
+            {
+                // Retrieve other T node x and y value
+                Vertex teleport_node = 
+                    m_validator->getTeleportNode(legal_moves[i]);
+                // Add connection to retrieved node in matrix rather than 
+                // current T node from legal_moves
+                m_adj_matrix[current_node.number][teleport_node.number] = 1;
+                break;
+            }
+            default: // '.' character - normal node
+            {
+                m_adj_matrix[current_node.number][legal_moves[i].number] = 1;
+            }
+        }
+
     }
 
     // Check for first unvisited legal move
@@ -241,9 +270,27 @@ void KnightGraph::dfsVisitNext(int start_x, int start_y)
     }
     else
     {
-        // No unvisited legal moves exist; Return
+        // No unvisited legal moves exist; Move back one node and check for move
 
-        return;
+        // Pop current node off path
+        m_path.pop_back();
+
+        if (!m_path.empty())
+        {
+            // Retrieves coordinates of previous node
+            next_x = m_path.back().x;
+            next_y = m_path.back().y;
+        }
+        else
+        {
+            // The path is empty after popping the current node off; The graph
+            // has been fully explored
+
+            return;
+        }
+
+        // Pop previous node off path so it is not added twice
+        m_path.pop_back();
     }
 
     // Visit next node
