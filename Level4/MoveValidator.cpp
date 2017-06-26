@@ -31,7 +31,8 @@ MoveValidator::MoveValidator(std::vector<std::vector<char> > board)
         for (unsigned int j = 0; j < m_board[0].size(); j++)
         {
             if (m_board[i][j] == 'T' 
-                && (i != m_teleport_node_one->y || j != m_teleport_node_one->x))
+                && (static_cast<int>(i) != m_teleport_node_one->y 
+                    || static_cast<int>(j) != m_teleport_node_one->x))
             {
                 m_teleport_node_two = new Vertex(j, i, m_board_row_size);
             }
