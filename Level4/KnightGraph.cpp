@@ -12,7 +12,6 @@
 
 #include "KnightGraph.h"
 
-// TODO: Handle case in which the starting or ending nodes are teleport nodes
 KnightGraph::KnightGraph(std::vector<std::vector<char> > board)
     : m_board(board),
     m_board_row_size(m_board[0].size()),
@@ -221,6 +220,15 @@ void KnightGraph::daShortestPath(int start_x, int start_y, int end_x, int end_y)
     if (result != m_nodes.end())
     {
         result->distance = 0;
+    }
+    
+    // Check if start node is a teleport node
+    if (m_board[start.y][start.x] == 'T')
+    {
+        // If the start node is a teleport node, retrieve other teleport
+        // node for start
+        Vertex other_teleport_node = m_validator->getTeleportNode(start);
+        start = other_teleport_node;
     }
     
     // Copy all nodes in m_nodes to queue and create a min heap
