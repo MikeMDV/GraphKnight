@@ -1,11 +1,12 @@
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 06/24/17
+ *  Date Last Modified: 06/30/17
  *
  */
 
 #include <iostream>
 #include <vector>
+#include <limits>
 
 #include "MoveValidator.h"
 
@@ -269,6 +270,52 @@ Vertex MoveValidator::getTeleportNode(Vertex position)
         Vertex error(-1, -1, -1);
         return error;
     }
+}
+
+/* Algorithm - Retrieve the legal moves for the start position
+ *           - Instantiate an unsigned int with the max value for least degree
+ *           - Loop through the vector of legal moves, retrieve the legal moves 
+ *             for each of thoses moves, storing value in degree vector
+ *             - If the degree of the move being checked is less than the least 
+ *               degree, set least degree to that value
+ *           - Return a vector of Vertex with the least legal moves
+ * 
+ */
+std::vector<Vertex> MoveValidator::getLeastDegreeNeighbors(Vertex start)
+{
+    // Retrieve the legal moves for the start position
+    std::vector<Vertex> legal_moves = getLegalMoves(start);
+
+    // Retrieve the number of legal moves for each of the legal moves
+    unsigned int least_degree = std::numeric_limits<int>::max();
+    std::vector<unsigned int> degrees;
+    for (unsigned int i = 0; i < legal_moves.size(); i++)
+    {
+        std::vector<Vertex> legal_move_i_connections = 
+            getLegalMoves(legal_moves[i]);
+
+        // Store the degree of the node in the vector of degrees
+        unsigned int degree = legal_move_i_connections.size();
+        degrees.push_back(degree);
+
+        // Set least degree is necessary
+        if (degree < least_degree)
+        {
+            least_degree = degree;
+        }
+    }
+
+    // Retrive nodes with the least degree and return them
+    std::vector<Vertex> least_degree_neighbors;
+    for (unsigned int i = 0; i < degrees.size(); i++)
+    {
+        if (degrees[i] == least_degree)
+        {
+            least_degree_neighbors.push_back(legal_moves[i]);
+        }
+    }
+
+    return least_degree_neighbors;
 }
 
 /* Algorithm - Loop through each row and print each character

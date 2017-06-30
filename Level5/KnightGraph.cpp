@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 06/26/17
+ *  Date Last Modified: 06/30/17
  *
  */
 
@@ -87,15 +87,15 @@ void KnightGraph::bfsShortestPath(int start_x, int start_y,
     int end_x, int end_y)
 {
     // Verify start and end Vertex structs are on board    
-    Vertex start(start_x, start_y, m_board_row_size);    
+    Vertex start(start_x, start_y, m_board_row_size);
     Vertex end(end_x, end_y, m_board_row_size);
     
-    bool start_is_on_board = m_validator->isOnBoard(start);    
-    bool end_is_on_board   = m_validator->isOnBoard(end);
-    if (!start_is_on_board || !end_is_on_board)    
-    {        
+    bool start_is_on_board = m_validator->isOnBoard(start);
+    bool end_is_on_board   = m_validator->isOnBoard(end);
+    if (!start_is_on_board || !end_is_on_board)
+    {
         std::cout << "Start or end node is invalid.\n";
-        return;    
+        return;
     }
     
     // Build the adjacency matrix
@@ -203,9 +203,9 @@ void KnightGraph::daShortestPath(int start_x, int start_y, int end_x, int end_y)
     bool start_is_on_board = m_validator->isOnBoard(start);
     bool end_is_on_board   = m_validator->isOnBoard(end);
     bool start_is_rock     = m_validator->isRock(start);
-    bool end_is_rock       = m_validator->isRock(end);
-    bool start_is_barrier  = m_validator->isBarrier(start);    
-    bool end_is_barrier    = m_validator->isBarrier(end);
+    bool end_is_rock       = m_validator->isRock(end);
+    bool start_is_barrier  = m_validator->isBarrier(start);
+    bool end_is_barrier    = m_validator->isBarrier(end);
 
     if (!start_is_on_board || !end_is_on_board || start_is_rock || end_is_rock 
         || start_is_barrier || end_is_barrier)
@@ -317,7 +317,7 @@ void KnightGraph::daShortestPath(int start_x, int start_y, int end_x, int end_y)
  *           - Loop through longest path algorithm searches times
  * 
  */
-void apprLongestPath(int start_x, int start_y, int end_x, int end_y, 
+void KnightGraph::apprLongestPath(int start_x, int start_y, int end_x, int end_y, 
         int searches)
 {
     // Build the adjacency matrix
@@ -330,9 +330,9 @@ void apprLongestPath(int start_x, int start_y, int end_x, int end_y,
     bool start_is_on_board = m_validator->isOnBoard(start);
     bool end_is_on_board   = m_validator->isOnBoard(end);
     bool start_is_rock     = m_validator->isRock(start);
-    bool end_is_rock       = m_validator->isRock(end);
-    bool start_is_barrier  = m_validator->isBarrier(start);    
-    bool end_is_barrier    = m_validator->isBarrier(end);
+    bool end_is_rock       = m_validator->isRock(end);
+    bool start_is_barrier  = m_validator->isBarrier(start);
+    bool end_is_barrier    = m_validator->isBarrier(end);
 
     if (!start_is_on_board || !end_is_on_board || start_is_rock || end_is_rock 
         || start_is_barrier || end_is_barrier)

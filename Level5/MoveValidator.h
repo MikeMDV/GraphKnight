@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 06/24/17
+ *  Date Last Modified: 06/30/17
  *
  */
 
@@ -66,8 +66,6 @@ public:
      */
     bool isBarrier(Vertex position);
 
-    // TODO: Write getTeleportNode() method to retrieve other T node when 1 is
-    // given as a parameter
     /* Brief desc.        - A method to retrieve the other teleport node
      * param[in] position - Vertex representing the first teleport node
      *
@@ -75,6 +73,16 @@ public:
      *
      */
     Vertex getTeleportNode(Vertex position);
+
+    /* Brief desc.        - A method to retrieve the neighbor(s) with the least
+     *                      degree (number of nodes connected)
+     * param[in] position - Vertex representing the start position
+     *
+     * param[out]         - Returns vector of Vertex of neighbors with the least
+     *                      degree
+     *
+     */
+    std::vector<Vertex> getLeastDegreeNeighbors(Vertex start);
 
 private:
 
