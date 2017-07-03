@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 06/25/17
+ *  Date Last Modified: 07/02/17
  *
  */
 
@@ -71,6 +71,11 @@ public:
      */
     std::vector<Vertex> getPathToEnd();
 
+    /* Brief desc. - A method to print the length of m_path, calculating extra 
+     *               moves for water and lava nodes
+     *
+     */
+    void printCalculatedPathLengthAndPercent();
 
 private:
 
@@ -81,6 +86,47 @@ private:
      *
      */
     void dfsVisitNext(int start_x, int start_y);
+
+    /* Brief desc.        - A method to retrieve the neighbor(s) with the least
+     *                      degree (number of nodes connected)
+     * param[in] position - Vertex representing the start position
+     *
+     * param[out]         - Returns vector of Vertex of neighbors with the least
+     *                      degree
+     *
+     */
+    std::vector<Vertex> getLeastDegreeNeighbors(Vertex start);
+
+    /* Brief desc.        - A method to retrieve the sum of the degrees of the 
+     *                      neighbor(s) of the node
+     * param[in] position - Vertex representing the start position
+     *
+     * param[out]         - Returns an int for the sum of the degrees
+     *
+     */
+    int getSumOfDegreesOfNeighbors(Vertex start);
+
+    /* Brief desc. - For all m_nodes, set distance, parent node, and visited to 
+     *               default values
+     *
+     */
+    void setM_nodeValsToDefaults();
+
+    /* Brief desc.   - Returns the longest path from the m_path_store
+     * param[in] end - Vertex representing the end position
+     *
+     * param[out]    - Returns an vector of Vertex
+     *
+     */
+    std::vector<Vertex> getLongestPathFromPathStore(Vertex end);
+
+    /* Brief desc.     - Build the path in reverse order from the path end node 
+     *                   and store in m_path
+     * param[in] start - Vertex representing the start position
+     * param[in] end   - Vertex representing the end position
+     *
+     */
+    void buildPathInReverse(Vertex start, Vertex end);
 
     // Attributes
     MoveValidator *m_validator;
@@ -100,7 +146,6 @@ private:
     std::vector<std::vector<int> > m_adj_matrix;
 
     std::vector<std::vector<Vertex> > m_path_store;
-
 };
 
 #endif // KNIGHT_GRAPH_H

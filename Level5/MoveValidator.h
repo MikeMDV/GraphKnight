@@ -3,7 +3,7 @@
 
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 06/30/17
+ *  Date Last Modified: 07/01/17
  *
  */
 
@@ -73,16 +73,6 @@ public:
      *
      */
     Vertex getTeleportNode(Vertex position);
-
-    /* Brief desc.        - A method to retrieve the neighbor(s) with the least
-     *                      degree (number of nodes connected)
-     * param[in] position - Vertex representing the start position
-     *
-     * param[out]         - Returns vector of Vertex of neighbors with the least
-     *                      degree
-     *
-     */
-    std::vector<Vertex> getLeastDegreeNeighbors(Vertex start);
 
 private:
 

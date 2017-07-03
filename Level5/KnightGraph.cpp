@@ -1,14 +1,16 @@
 /*              Author: Michael Marven
  *        Date Created: 05/30/17
- *  Date Last Modified: 06/30/17
+ *  Date Last Modified: 07/02/17
  *
  */
 
 #include <iostream>
 #include <algorithm>
+#include <numeric>
 #include <vector>
 #include <deque>
 #include <queue>
+#include <random>
 
 #include "KnightGraph.h"
 
@@ -41,11 +43,8 @@ KnightGraph::~KnightGraph()
 }
 
 /* Algorithm - Confirm that the start node is on the board
- *           - Call dfsVisitNext() to use a modified DFS to build the adjacency 
- *             matrix until a point is reached where a move to an unvisited node
- *             is not possible
- *           - Check m_nodes for the first unvisited node and begin DFS again 
- *             from that node
+ *           - Call dfsVisitNext() to use a DFS to build the adjacency matrix 
+ *           - Reset the visited status for all nodes in m_nodes
  * 
  */
 void KnightGraph::dfsGraphBuild(int start_x, int start_y)
@@ -70,8 +69,8 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
     }
 }
 
-/* Algorithm - Call dfsGraphBuild() to build the adjacency matrix
- *           - Confirm the start and end points are on the board
+/* Algorithm - Confirm the start and end points are on the board
+ *           - Call dfsGraphBuild() to build the adjacency matrix
  *           - Use BFS to retrieve a shortest path to the end node
  *             - Enqueue the first node in a FIFO queue
  *             - While the node queue contains nodes, check the adjacency matrix
@@ -279,42 +278,30 @@ void KnightGraph::daShortestPath(int start_x, int start_y, int end_x, int end_y)
         std::pop_heap(m_node_queue.begin(), m_node_queue.end(), greater_dist());
         m_node_queue.pop_back();
     }
-    // TODO: Factor this into separate method in Level 5 for Da and lp
+
     // Build path in reverse order
-    int node_number = end.number;
-    while (node_number != -1)
-    {
-        m_path.push_back(m_nodes[node_number]);
-
-        // Set next node number to parent number of the current node
-        if (node_number == start.number)
-        {
-            node_number = -1;
-        }
-        else if (m_board[m_nodes[node_number].y][m_nodes[node_number].x] == 'T')
-        {
-            // Other teleport node must be inserted in path
-            Vertex other_teleport_node = 
-                m_validator->getTeleportNode(m_nodes[node_number]);
-            int node_after_teleport_number = m_nodes[node_number].parent_num;
-            m_path.push_back(m_nodes[other_teleport_node.number]);
-            node_number = node_after_teleport_number;
-        }
-        else
-        {
-            int next_node_number = m_nodes[node_number].parent_num;
-            node_number = next_node_number;
-        }
-    }
-
-    // Reverse order of path
-    std::reverse(m_path.begin(), m_path.end());
+    buildPathInReverse(start, end);
 }
 
 /* Algorithm - Call dfsGraphBuild() to build the adjacency matrix
  *           - Confirm the start and end points are on the board
  *           - Call daShortestPath() and place the path in m_path_store
  *           - Loop through longest path algorithm searches times
+ *             - While the end node has not been reached and there are unvisited
+ *               nodes to explore
+ *               - Build path using heuristic of choosing next node having least 
+ *               degree
+ *               - Tiebreak 1: Get sum of degrees of neighbor nodes of least
+ *               degree neighbors and choose least
+ *               - Tiebreak 2: If current node and the next node is on the 
+ *               previous longest path, choose another node
+ *               - Tiebreak 3: Choose a node at random
+ *               - Set the next node parent_num as the current node
+ *               - Set the current_node to next_node
+ *             - Build path in reverse order from end node
+ *             - Add path to m_path_store then clear m_path
+ *             - Reset m_nodes values to defaults
+ *             - Copy longest path from m_node_store to m_path
  * 
  */
 void KnightGraph::apprLongestPath(int start_x, int start_y, int end_x, int end_y, 
@@ -346,43 +333,134 @@ void KnightGraph::apprLongestPath(int start_x, int start_y, int end_x, int end_y
     m_path_store.push_back(m_path);
     m_path.clear();
 
-    // Reset visited, parent, and distance status for all nodes TODO: make a private method
-    for (unsigned int i = 0; i < m_nodes.size(); i++)
-    {
-        m_nodes[i].visited    = false;
-        m_nodes[i].distance   = std::numeric_limits<int>::max();
-        m_nodes[i].parent_num = -1;
-
-    }
+    // Reset visited, parent, and distance status for all nodes
+    setM_nodeValsToDefaults();
 
     // Loop through longest path algorithm searches times
     for (int i = 0; i < searches; i++)
     {
-        // TODO: make a method that will find neighbor with least degree
-        // TODO: make a method that will sum the degrees of neighbors
-        
-        // Start at start node and choose move to unvisited node with least degree
+        // Build path using heuristic of choosing next node having least degree
+        Vertex current_node = start;
+        bool are_unvisited_nodes = true;
+        while (current_node.number != end.number && are_unvisited_nodes)
+        {
+            // Mark current node visited
+            auto result = std::find_if(
+                m_nodes.begin(), m_nodes.end(), match_num(current_node.number));
+            if (result != m_nodes.end())
+            {
+                result->visited = true;
+            }
 
-        // Tiebreaker 1 sum of neighbor node's degree and choose least
+            // Choose move to unvisited node with least degree
+            std::vector<Vertex> next_move_set = 
+                getLeastDegreeNeighbors(current_node);
 
-        // Tiebreaker 2 if current node and the next node is on an earlier path, choose another
+            if (next_move_set.size() == 0)
+            {
+                // No unvisited nodes available for move from this position
+                are_unvisited_nodes = false;
+            }
+            else
+            {
+                // Check if tiebreakers are needed
+                // Tiebreak 1 - Get sum of degrees of neighbor nodes of least 
+                //              degree neighbors and choose least
+                if (next_move_set.size() > 1)
+                {
+                    std::vector<int> degree_sums;
+                    int least_degree_sum = std::numeric_limits<int>::max();
+                    for (unsigned int j = 0; j < next_move_set.size(); j++)
+                    {
+                        int sum = 
+                            getSumOfDegreesOfNeighbors(next_move_set[j]);
 
-        // Tiebreaker 3 choose a node at random
+                        degree_sums.push_back(sum);
 
-        // If stuck what to do? terminate or try from last branch? How to backtrack without recursion?
+                        // Set least degree sum if necessary
+                        if (sum < least_degree_sum)
+                        {
+                            least_degree_sum = sum;
+                        }
+                    }
 
-        // Terminate once end node is found
+                    // Create a vector of neighbor nodes with neighbors with  
+                    // least degree and copy to next move set
+                    std::vector<Vertex> least_degree_sum_neighbors;
+                    for (unsigned int j = 0; j < next_move_set.size(); j++)
+                    {
+                        if (degree_sums[j] == least_degree_sum)
+                        {
+                            least_degree_sum_neighbors.push_back(
+                                next_move_set[j]);
+                        }
+                    }
+                    next_move_set = least_degree_sum_neighbors;
+                }
 
-        // Add path to m_path_store
+                // Tiebreak 2 if current node and the next node is on the 
+                // previous longest path, choose another node
+                std::vector<Vertex> longest_path = 
+                    getLongestPathFromPathStore(end);
+                result = std::find_if(longest_path.begin(), longest_path.end(), 
+                    match_num(current_node.number));
+                if (result != longest_path.end())
+                {
+                    // Advance result to next node and check if it matches any  
+                    // in the move set
+                    std::vector<Vertex> nodes_not_on_earlier_path;
+                    ++result;
+                    for (unsigned int j = 0; j < next_move_set.size(); j++)
+                    {
+                        if (result->number != next_move_set[j].number)
+                        {
+                            nodes_not_on_earlier_path.push_back(
+                                next_move_set[j]);
+                        }
+                    }
+                    
+                    if (nodes_not_on_earlier_path.size() > 0)
+                    {
+                        next_move_set = nodes_not_on_earlier_path;
+                    }
+                }
 
-        // clear m_path and m_nodes
+                // Tiebreaker 3 choose a node at random
+                if (next_move_set.size() > 1)
+                {
+                    std::vector<Vertex> random_node;
+                    std::random_device rd;
+                    std::mt19937 engine(rd());
+                    std::uniform_int_distribution<unsigned int> 
+                        dis(0, next_move_set.size() - 1);
+                    unsigned int index = dis(engine);
+                    random_node.push_back(next_move_set[index]);
+                    next_move_set = random_node;
+                }
 
-        // After loop end, copy longest path from m_node_store to m_path
+                // Set the next node parent_num as the current node
+                Vertex next_node = next_move_set[0];
+                m_nodes[next_node.number].parent_num = current_node.number;
 
-        // Return
+                // Set the current_node to next_node
+                current_node = next_node;
+            }
+        }
 
+        // Build path in reverse order from end node
+        buildPathInReverse(start, current_node);
+
+        // Add path to m_path_store then clear m_path
+        m_path_store.push_back(m_path);
+        m_path.clear();
+
+        // Reset m_nodes values to defaults
+        setM_nodeValsToDefaults();
     }
 
+    // Copy longest path from m_node_store to m_path
+    std::vector<Vertex> longest_path = getLongestPathFromPathStore(end);
+    m_path = longest_path;
 }
 
 /* Algorithm - Mark current node visited and add to m_path
@@ -505,6 +583,199 @@ void KnightGraph::dfsVisitNext(int start_x, int start_y)
     dfsVisitNext(next_x, next_y);
 }
 
+/* Algorithm - Retrieve the legal moves for the start position
+ *           - Instantiate an unsigned int with the max value for least degree
+ *           - Loop through the vector of legal moves, retrieve the legal moves 
+ *             for each of thoses moves, storing value in degree vector
+ *             - If the degree of the move being checked is less than the least 
+ *               degree, set least degree to that value
+ *           - Return a vector of Vertex with the unvisited least degree 
+ *             legal moves
+ * 
+ */
+std::vector<Vertex> KnightGraph::getLeastDegreeNeighbors(Vertex start)
+{
+    // Retrieve the legal moves for the start position
+    std::vector<Vertex> legal_moves = m_validator->getLegalMoves(start);
+
+    // Create a vector of unvisited legal move nodes
+    std::vector<Vertex> uv_legal_moves;
+    for (unsigned int i = 0; i < legal_moves.size(); i++)
+    {
+        if (!(m_nodes[legal_moves[i].number].visited))
+        {
+            uv_legal_moves.push_back(legal_moves[i]);
+        }
+    }
+
+    // Retrieve the number of legal moves for each of the legal moves
+    unsigned int least_degree = std::numeric_limits<int>::max();
+    std::vector<unsigned int> uv_legal_moves_degrees;
+    for (unsigned int i = 0; i < uv_legal_moves.size(); i++)
+    {
+        std::vector<Vertex> conn_uv_legal_moves = 
+            m_validator->getLegalMoves(uv_legal_moves[i]);
+
+        // Create a vector of unvisited connections to unvisited legal moves
+        std::vector<Vertex> uv_conn_uv_legal_moves;
+        for (unsigned int j = 0; j < conn_uv_legal_moves.size(); j++)
+        {
+            if (!m_nodes[conn_uv_legal_moves[j].number].visited)
+            {
+                uv_conn_uv_legal_moves.push_back(conn_uv_legal_moves[j]);
+            }
+        }
+
+        // Store the degree of the node in the vector of degrees
+        unsigned int degree = uv_conn_uv_legal_moves.size();
+        uv_legal_moves_degrees.push_back(degree);
+
+        // Set least degree if necessary
+        if (degree < least_degree)
+        {
+            least_degree = degree;
+        }
+    }
+
+    // Retrieve unvisited nodes with the least degree and return them
+    std::vector<Vertex> least_degree_neighbors;
+    for (unsigned int i = 0; i < uv_legal_moves.size(); i++)
+    {
+        if (uv_legal_moves_degrees[i] == least_degree)
+        {
+            least_degree_neighbors.push_back(uv_legal_moves[i]);
+        }
+    }
+
+    return least_degree_neighbors;
+}
+
+/* Algorithm - Retrieve the unvisited legal moves for the start position
+ *           - Instantiate an unsigned int for the sum of degrees
+ *           - Loop through the vector of legal moves, retrieve the legal moves 
+ *             for each of thoses moves, storing value in degree vector
+ *           - Return a sum of the vector degrees
+ * 
+ */
+int KnightGraph::getSumOfDegreesOfNeighbors(Vertex start)
+{
+    // Retrieve the legal moves for the start position
+    std::vector<Vertex> legal_moves = m_validator->getLegalMoves(start);
+
+    // Create a vector of unvisited legal move nodes
+    std::vector<Vertex> uv_legal_moves;
+    for (unsigned int i = 0; i < legal_moves.size(); i++)
+    {
+        if (!m_nodes[legal_moves[i].number].visited)
+        {
+            uv_legal_moves.push_back(legal_moves[i]);
+        }
+    }
+
+    // Retrieve the number of legal moves for each of the legal moves
+    std::vector<unsigned int> uv_legal_moves_degrees;
+    for (unsigned int i = 0; i < uv_legal_moves.size(); i++)
+    {
+        std::vector<Vertex> conn_uv_legal_moves = 
+            m_validator->getLegalMoves(uv_legal_moves[i]);
+
+        // Create a vector of unvisited connections to unvisited legal moves
+        std::vector<Vertex> uv_conn_uv_legal_moves;
+        for (unsigned int j = 0; j < conn_uv_legal_moves.size(); j++)
+        {
+            if (!m_nodes[conn_uv_legal_moves[j].number].visited)
+            {
+                uv_conn_uv_legal_moves.push_back(conn_uv_legal_moves[j]);
+            }
+        }
+
+        // Store the degree of the node in the vector of degrees
+        unsigned int degree = uv_conn_uv_legal_moves.size();
+        uv_legal_moves_degrees.push_back(degree);
+    }
+
+    // Sum vector of degrees and return it
+    int sum = static_cast<int>(std::accumulate(uv_legal_moves_degrees.begin(),
+        uv_legal_moves_degrees.end(), 0));
+
+    return sum;
+}
+
+/* Algorithm - Set values for visited, distance, and parent node to defaults
+ * 
+ */
+void KnightGraph::setM_nodeValsToDefaults()
+{
+    for (unsigned int i = 0; i < m_nodes.size(); i++)
+    {
+        m_nodes[i].visited    = false;
+        m_nodes[i].distance   = std::numeric_limits<int>::max();
+        m_nodes[i].parent_num = -1;
+    }
+}
+
+/* Algorithm - Find the size of the longest path in m_path_store with end as the
+ *             last node
+ *           - Return the last path equal to the longest path
+ * 
+ */
+std::vector<Vertex> KnightGraph::getLongestPathFromPathStore(Vertex end)
+{
+    // Find the size of the longest path in m_path_store
+    unsigned int longest_path_size  = 0;
+    unsigned int longest_path_index = 0;
+    for (unsigned int i = 0; i < m_path_store.size(); i++)
+    {
+        if (m_path_store[i].size() > longest_path_size 
+            && m_path_store[i].back().number == end.number)
+        {
+            longest_path_size  = m_path_store[i].size();
+            longest_path_index = i;
+        }
+    }
+
+    // Return the path with the largest index equal to the longest path size
+    std::vector<Vertex> longest_path = m_path_store[longest_path_index];
+
+    return longest_path;
+}
+
+/* Algorithm - Build the path in reverse from the end node and store in m_path
+ * 
+ */
+void KnightGraph::buildPathInReverse(Vertex start, Vertex end)
+{
+    // Build path in reverse order from end node
+    int node_number = end.number;
+    while (node_number != -1)
+    {
+        m_path.push_back(m_nodes[node_number]);
+
+        // Set next node number to parent number of the current node
+        if (node_number == start.number)
+        {
+            node_number = -1;
+        }
+        else if (m_board[m_nodes[node_number].y][m_nodes[node_number].x] == 'T')
+        {
+            // Other teleport node must be inserted in path
+            Vertex other_teleport_node = 
+                m_validator->getTeleportNode(m_nodes[node_number]);
+            int node_after_teleport_number = m_nodes[node_number].parent_num;
+            m_path.push_back(m_nodes[other_teleport_node.number]);
+            node_number = node_after_teleport_number;
+        }
+        else
+        {
+            int next_node_number = m_nodes[node_number].parent_num;
+            node_number = next_node_number;
+        }
+    }
+
+    // Reverse order of path
+    std::reverse(m_path.begin(), m_path.end());
+}
+
 /* Algorithm - Return m_path
  * 
  */
@@ -513,3 +784,117 @@ std::vector<Vertex> KnightGraph::getPathToEnd()
     return m_path;
 }
 
+/* Algorithm - Calculate the number of total moves possible if a path traversed
+ *             every possible node
+ *             - '.' = 1; 'W' = 2; 'L' = 5; Both 'T' = 1; 'R' & 'B' = 0
+ *           - Create an int vector with a value for each move
+ *           - Sum the vector
+ *           - Print the total possible path length and the percentage of the 
+ *             total length for m_path
+ * 
+ */
+void KnightGraph::printCalculatedPathLengthAndPercent()
+{
+    std::vector<int> move_lengths;
+    bool teleport_was_on_board = false;
+    for (unsigned int i = 0; i < m_board.size(); i++)
+    {
+        for (unsigned int j = 0; j < m_board_row_size; j++)
+        {
+            char node_type = m_board[i][j];
+
+            // Determine what the move value will be
+            switch(node_type)
+            {
+                case '.':
+                {
+                    move_lengths.push_back(1);
+                    break;
+                }
+                case 'W':
+                {
+                    move_lengths.push_back(WATER_NODE_WEIGHT);
+                    break;
+                }
+                case 'L':
+                {
+                    move_lengths.push_back(LAVA_NODE_WEIGHT);
+                    break;
+                }
+                case 'T':
+                {
+                    teleport_was_on_board = true;
+                    break;
+                }
+                default: // 'B', 'R'
+                {
+                    // Do nothing
+                }
+            }
+        }
+    }
+
+    // Add 1 for the teleport nodes
+    if (teleport_was_on_board)
+    {
+        move_lengths.push_back(1);
+    }
+
+    // Sum the moves
+    int total_possible_moves = std::accumulate(move_lengths.begin(), 
+        move_lengths.end(), 0);
+    std::cout << "Total possible moves on board = " << total_possible_moves 
+        << "\n";
+
+    // Calculate the length of m_path
+    std::vector<int> path_lengths;
+    bool teleport_was_in_path = false;
+    for (int i = 0; i < m_path.size(); i++)
+    {
+        // Get the node tyoe of the legal move node
+        char node_type = m_board[m_path[i].y][m_path[i].x];
+
+        // Determine what the edge weight will be for the adj matrix connection
+        switch(node_type)
+        {
+            case '.':
+            {
+                path_lengths.push_back(1);
+                break;
+            }
+            case 'W':
+            {
+                path_lengths.push_back(WATER_NODE_WEIGHT);
+                break;
+            }
+            case 'L':
+            {
+                path_lengths.push_back(LAVA_NODE_WEIGHT);
+                break;
+            }
+            default: // 'T'
+            {
+                teleport_was_in_path = false;
+            }
+        }
+    }
+
+    if (teleport_was_in_path)
+    {
+        // Add 1 for teleport nodes
+        path_lengths.push_back(1);
+    }
+
+    // Sum the moves
+    int total_path_length = std::accumulate(path_lengths.begin(), 
+        path_lengths.end(), 0);
+    std::cout << "Total path length = " << total_path_length 
+        << "\n";
+
+    // Calculate the percentage
+    double percentage = static_cast<double>(total_path_length)
+        / static_cast<double>(total_possible_moves);
+
+    std::cout << "Total path length is " << percentage << " percent of max " 
+        << "possible path length\n";
+}

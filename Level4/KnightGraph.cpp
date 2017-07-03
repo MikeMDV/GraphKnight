@@ -41,11 +41,8 @@ KnightGraph::~KnightGraph()
 }
 
 /* Algorithm - Confirm that the start node is on the board
- *           - Call dfsVisitNext() to use a modified DFS to build the adjacency 
- *             matrix until a point is reached where a move to an unvisited node
- *             is not possible
- *           - Check m_nodes for the first unvisited node and begin DFS again 
- *             from that node
+ *           - Call dfsVisitNext() to use a DFS to build the adjacency matrix 
+ *           - Reset the visited status for all nodes in m_nodes
  * 
  */
 void KnightGraph::dfsGraphBuild(int start_x, int start_y)
@@ -70,8 +67,8 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
     }
 }
 
-/* Algorithm - Call dfsGraphBuild() to build the adjacency matrix
- *           - Confirm the start and end points are on the board
+/* Algorithm - Confirm the start and end points are on the board
+ *           - Call dfsGraphBuild() to build the adjacency matrix
  *           - Use BFS to retrieve a shortest path to the end node
  *             - Enqueue the first node in a FIFO queue
  *             - While the node queue contains nodes, check the adjacency matrix

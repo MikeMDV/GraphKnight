@@ -1,6 +1,6 @@
 /*              Author: Michael Marven
  *        Date Created: 05/26/17
- *  Date Last Modified: 06/26/17
+ *  Date Last Modified: 07/02/17
  *
  */
 
@@ -83,18 +83,34 @@ int main(int argc, char *argv[])
            '.','.','.','.','.','.','R','R','.','.','.','.','.','.','.','.'},//31
         };
 
+    // Try with the 8 x 8 board from Level 1 to 3
+    // std::vector<std::vector<char> > board = 
+    //     { {'.', '.', '.', '.', '.', '.', '.', '.'},
+    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
+    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
+    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
+    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
+    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
+    //       {'.', '.', '.', '.', '.', '.', '.', '.'},
+    //       {'.', '.', '.', '.', '.', '.', '.', '.'} };
+
     MoveValidator *validator = new MoveValidator(board);
     KnightGraph   *graph     = new KnightGraph(board);
 
     // int start_x = -1;
     // int start_y = 88;
-    int start_x = 15;
-    int start_y = 3;
-    int end_x   = 0;
-    int end_y   = 31;
+    int start_x = 0;
+    int start_y = 0;
+    // int end_x   = 25;
+    // int end_y   = 20;
+    int end_x   = 27;
+    int end_y   = 6; 
+
+    int searches = 1000;
 
     // graph->dfsGraphBuild(start_x, start_y);
-    graph->daShortestPath(start_x, start_y, end_x, end_y);
+    // graph->daShortestPath(start_x, start_y, end_x, end_y);
+    graph->apprLongestPath(start_x, start_y, end_x, end_y, searches);
     
     std::vector<Vertex> moves = graph->getPathToEnd();
     
@@ -102,6 +118,11 @@ int main(int argc, char *argv[])
     // Comment above and uncomment below to test without board printing
     // bool printBoard = false;
     validator->validateMoves(moves, printBoard);
+
+    graph->printCalculatedPathLengthAndPercent();
+
+    // Best result with these coordinates (0,0) (27,6)
+    // Path length - 722; Percntage - 63.7809%
 
     // Delete pointers
     if (validator)
