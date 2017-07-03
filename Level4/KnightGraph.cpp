@@ -76,8 +76,8 @@ void KnightGraph::dfsGraphBuild(int start_x, int start_y)
  *               becomes distance of the current node + 1; the parent of the 
  *               neighbors is changed to the current vertex; Enqueue the current
  *               node
- *             - Once the FIFO queue is empty build the path in reverse order
- *               from the destination to the source
+ *           - Once the FIFO queue is empty build the path in reverse order
+ *             from the destination to the source
  * 
  */
 void KnightGraph::bfsShortestPath(int start_x, int start_y, 

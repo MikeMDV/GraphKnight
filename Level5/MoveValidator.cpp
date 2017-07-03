@@ -125,7 +125,7 @@ bool MoveValidator::validateMoves(std::vector<Vertex> moves, bool print_moves)
     {
         std::cout << "All the moves were valid.\n";
     }
-    // std::cout << "MoveValidator::validateMoves - About to return all_moves_are_valid\n";
+    
     return all_moves_are_valid;
 }
 
@@ -135,7 +135,6 @@ bool MoveValidator::validateMoves(std::vector<Vertex> moves, bool print_moves)
  */
  std::vector<Vertex> MoveValidator::getLegalMoves(Vertex start)
  {
-    // std::cout << "MoveValidator::getLegalMoves - Entered\n";
     std::vector<Vertex> legal_moves;
 
     // Check if move to 1 o'clock position is legal
@@ -304,7 +303,6 @@ void MoveValidator::printBoard(std::vector<std::vector<char> > board)
  */
 bool MoveValidator::checkMove(Vertex origin, Vertex destination)
 {
-    // std::cout << "MoveValidator::checkMove - Entered\n";
     // Check if move is valid
     bool is_valid_shape  = false;
     bool dest_on_board   = false;
@@ -382,14 +380,13 @@ bool MoveValidator::checkMove(Vertex origin, Vertex destination)
  */
 bool MoveValidator::isLegalMove(Vertex start, Vertex end)
 {
-    // std::cout << "MoveValidator::isLegalMove - Entered\n";
     // Check legality of move
     bool print_board = false;
     std::vector<Vertex> move;
     
     move.push_back(start);
     move.push_back(end);
-    // std::cout << "MoveValidator::isLegalMove - About to call validateMoves()\n";
+    
     return (validateMoves(move, print_board));
 }
 
@@ -401,7 +398,6 @@ bool MoveValidator::isLegalMove(Vertex start, Vertex end)
  */
 bool MoveValidator::moveIsBlocked(Vertex start, Vertex end)
 {
-    // std::cout << "MoveValidator::moveIsOpen - Entered\n";
     bool move_is_blocked = false;
     int  horizontal_diff = 0;
     int  vertical_diff   = 0;

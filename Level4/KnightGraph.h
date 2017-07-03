@@ -55,6 +55,7 @@ public:
     void daShortestPath(int start_x, int start_y, int end_x, int end_y);
 
     /* Brief desc. - A method to retrieve the path of moves to the end node 
+     * param[out]  - Returns vector of Vertex from m_path
      *
      */
     std::vector<Vertex> getPathToEnd();

@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     int end_x   = 27;
     int end_y   = 6; 
 
-    int searches = 1000;
+    int searches = 100;
 
     // graph->dfsGraphBuild(start_x, start_y);
     // graph->daShortestPath(start_x, start_y, end_x, end_y);
