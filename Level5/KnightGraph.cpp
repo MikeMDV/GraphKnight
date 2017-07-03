@@ -337,7 +337,7 @@ void KnightGraph::apprLongestPath(int start_x, int start_y, int end_x, int end_y
     setM_nodeValsToDefaults();
 
     // Loop through longest path algorithm searches times
-    for (int i = 0; i < searches; i++)
+    for (unsigned int i = 0; i < searches; i++)
     {
         // Build path using heuristic of choosing next node having least degree
         Vertex current_node = start;
@@ -849,7 +849,7 @@ void KnightGraph::printCalculatedPathLengthAndPercent()
     // Calculate the length of m_path
     std::vector<int> path_lengths;
     bool teleport_was_in_path = false;
-    for (int i = 0; i < m_path.size(); i++)
+    for (unsigned int i = 0; i < m_path.size(); i++)
     {
         // Get the node tyoe of the legal move node
         char node_type = m_board[m_path[i].y][m_path[i].x];
