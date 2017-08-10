@@ -1,5 +1,5 @@
 # GraphKnight
-Knight Board solutions
+KB Challenge solutions
 
 ## Systems
 
